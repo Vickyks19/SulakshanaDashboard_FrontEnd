@@ -11,6 +11,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
 
+  console.log("test");
+
   async function handleSubmit(e) {
     e.preventDefault();
 
