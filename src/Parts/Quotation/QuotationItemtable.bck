@@ -1,0 +1,143 @@
+import React from "react";
+import { Text, View } from "@react-pdf/renderer";
+// import "./QuotationItemsTable.css";
+// import ItemsTableHeader from "./ItemsTableHeader";
+// import ItemData from "./ItemData";
+
+function QuotationItemsTable({ quotationNew }) {
+  return (
+    <View
+      className="container_table"
+      style={{ flexDirection: "row", flexWrap: "wrap", marginTop: "24px" }}
+    >
+      <View
+        className="container_items"
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          flexDirection: "row",
+          border: "2px",
+        }}
+      >
+        <Text className="description_items" style={{ fontSize: "15px" }}>
+          Item Description
+        </Text>
+        <Text
+          className="qty_items"
+          style={{
+            fontSize: "15px",
+            marginLeft: "21%",
+          }}
+        >
+          Qty
+        </Text>
+        <Text
+          className="rate_items"
+          style={{
+            fontSize: "15px",
+
+            marginLeft: "20%",
+          }}
+        >
+          Rate
+        </Text>
+        <Text
+          className="amount_items"
+          style={{ fontSize: "15px", marginLeft: "20%" }}
+        >
+          Amount
+        </Text>
+      </View>
+
+      <View
+        className="row"
+        style={{
+          marginTop: "3px",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <Text className="description_items" style={{ fontSize: "15px" }}>
+          {/* {quotationNew?.quotationNew.items[0].size}  */}
+          {quotationNew?.quotationNew.items[0].frame}
+          {/* {quotationNew?.quotationNew.items[1].mount} */}
+        </Text>
+        <Text
+          className="qty_items"
+          style={{
+            fontSize: "15px",
+            marginRight: "-5%",
+            marginLeft: "35%",
+          }}
+        >
+          {quotationNew?.quotationNew.items[1].qty}
+        </Text>
+        <Text
+          className="rate_items"
+          style={{ fontSize: "15px", marginLeft: "25%" }}
+        >
+          {quotationNew?.quotationNew.items[1].price.frame}
+        </Text>
+        <Text
+          className="amount_items"
+          style={{ fontSize: "15px", marginLeft: "25%" }}
+        >
+          {quotationNew?.quotationNew.items[1].price.frame}
+        </Text>
+      </View>
+
+      <View
+        className="row_total"
+        style={{
+          marginTop: "20%",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <Text
+          className="total"
+          style={{ fontSize: "15px", marginLeft: "81.5%" }}
+        >
+          Total
+        </Text>
+        <Text
+          className="total_item"
+          style={{
+            fontSize: "15px",
+            marginLeft: "5%",
+          }}
+        >
+          {quotationNew.quotationNew.total}
+        </Text>
+      </View>
+      <View
+        className="row_total"
+        style={{
+          marginTop: "2%",
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <Text
+          className="total"
+          style={{ fontSize: "15px", marginLeft: "75.2%" }}
+        >
+          GrandTotal
+        </Text>
+        <Text
+          className="total_item"
+          style={{
+            fontSize: "15px",
+            marginRight: "-2%",
+            marginLeft: "5%",
+          }}
+        >
+          {quotationNew.quotationNew.grandTotal}
+        </Text>
+      </View>
+      
+    </View>
+  );
+}
+
+export default QuotationItemsTable;

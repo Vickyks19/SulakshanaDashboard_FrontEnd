@@ -1,0 +1,35 @@
+.popup-box {
+  position: fixed;
+  /*background: #00000050;*/
+  width: 70%;
+  height: 100vh;
+  margin-top: 2%;
+  margin-left: 20%;
+}
+
+/*.box {
+    position: relative;
+    width: 50%;
+    height: auto;
+    margin-top: 50px;
+    margin-left: 50vh;
+    background: #fff;
+    border-radius: 4px;
+    padding-left: 200px;
+    border: 1px solid #999;
+    overflow: auto;
+}*/
+
+.pdf {
+  position: relative;
+  width: 100%;
+  /*height: auto;*/
+
+  margin-top: 50px;
+  margin-left: 50px;
+  background: #fff;
+  border-radius: 4px;
+  /*padding-left: 200px;*/
+  border: 1px solid #999;
+  overflow: auto;
+}

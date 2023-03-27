@@ -1,0 +1,21 @@
+.quotationNoContainer {
+    display:flex;
+  flex-direction: row;
+  margin-top: 30px;
+  justify-content:space-between;
+  /*justify-content: flex-end;*/
+}
+
+.quotationNo {
+    font-size: 222px;
+   /* font-style: ;*/
+}
+
+.label {
+  width: 60%;
+}
+
+.quotationDateContainer {
+  flex-direction: row;
+  justify-content: flex-end;
+}
