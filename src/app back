@@ -1,0 +1,23 @@
+import React from "react";
+import "./App.css";
+import Home from "./pages/Home/Home";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login/Login";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Login />} exact />
+
+          <Route path="/Home" element={<Home />} exact />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+export default App;

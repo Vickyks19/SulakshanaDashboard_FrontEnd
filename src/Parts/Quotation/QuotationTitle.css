@@ -1,0 +1,17 @@
+/* .titleContainer {
+  /* flex-direction: row; */
+/* display: flex; */
+/* margin-top: 24px; */
+/* } */
+
+/* .reporttitle {
+  color: #61dafb;
+  letter-spacing: 4px;
+  font-size: 25px;
+  text-align: center;
+  text-transform: uppercase;
+}  */
+
+.titleContainer {
+  align-items: center;
+}

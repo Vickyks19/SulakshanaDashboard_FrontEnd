@@ -1,0 +1,31 @@
+.container_items {
+  flex-direction: row;
+  border-bottom-color: #bff0fd;
+  background-color: #bff0fd;
+  align-items: center;
+  height: 24px;
+  text-align: center;
+  border-bottom-width: 1px;
+}
+
+.description_items {
+  width: 60%;
+  border-right-color: aqua;
+  border-right-width: 1px;
+}
+
+.qty_items {
+  width: 15%;
+  border-right-color: aqua;
+  border-right-width: 1px;
+}
+
+.rate_items {
+  width: 15%;
+  border-right-color: aqua;
+  border-right-width: 1px;
+}
+
+.amount {
+  width: 15%;
+}
