@@ -21,7 +21,8 @@ function Quotation() {
     sellingRate: 0,
   });
 
-  const [qty, setQty] = useState({});
+  // const [qty, setQty] = useState({});
+
   const [withTax, setWithTAx] = useState(false);
   const [withoutTax, setWithoutTAx] = useState("");
   let navigate = useNavigate();
@@ -39,6 +40,7 @@ function Quotation() {
   // const [sellingRate, setSellingRate] = useState(0);
 
   const [size, setSize] = useState({});
+  console.log(42, size, size.glassSize);
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
@@ -212,47 +214,6 @@ function Quotation() {
     }
   };
 
-  // const calculateEdit = (qty, entity) => {
-
-  //   const rate =
-  //     record[`${entity}Data`].find((item) => {
-  //       return (
-  //         item.width.toString() + " * " + item.height.toString() ===
-  //         size[`${entity}Size`]
-  //       );
-  //     })?.rate || 0;
-
-  //   const newprice = qty * rate;
-
-  //   setPrice({ ...price, [entity]: newprice });
-
-  //   setItems([
-  //     ...items,
-  //     {
-  //       name: entity,
-  //       size: size?.[`${entity}Size`],
-  //       price,
-  //       qty,
-  //     },
-  //   ]);
-
-  //   const index = items.findIndex((item) => {
-  //     return item.name === entity;
-  //   });
-
-  //   if (index > -1) {
-  //     const itemNew = items;
-  //     itemNew.splice(index, 1, {
-  //       name: entity,
-  //       size: size?.[`${entity}Size`],
-  //       price,
-  //       qty,
-  //     });
-
-  //     setItems(itemNew);
-  //   }
-  // };
-
   useEffect(() => {
     const value =
       price.frame +
@@ -286,6 +247,51 @@ function Quotation() {
     const grandTotal = total;
     setgrandToatal(grandTotal);
   };
+
+  const calculateEdit = (qty, entity) => {
+    let newsize = {};
+    const newSize = newdata?.newdata?.items?.map((item) => {
+      if (item?.Name !== "painting") {
+        return { [`${item.name}Size`]: item.size };
+      }
+    });
+
+    const newObj = Object.assign(newsize, ...newSize);
+    console.log(262, newObj);
+    setSize(newObj);
+  };
+
+  const Qty = (entity) => {
+    console.log(280, entity);
+    const newQty = newdata?.newdata?.items?.find((item) => {
+      if (item.name === entity) {
+        console.log(285, item.qty);
+        return item.qty;
+      }
+    });
+    console.log(288, newQty, newQty?.qty);
+    return newQty?.qty;
+  };
+
+  const Price = (entity) => {
+    console.log(280, entity);
+    const newPrices = newdata?.newdata?.items?.find((item) => {
+      if (item.name === entity) {
+        console.log(285, item.price);
+        return item.price;
+      }
+    });
+    console.log(288, newPrices?.price);
+    return newPrices?.price;
+  };
+
+  useEffect(() => {
+    if (newdata) {
+      calculateEdit();
+      Qty();
+      Price();
+    }
+  }, []);
 
   useEffect(() => {
     FrameData();
@@ -376,14 +382,14 @@ function Quotation() {
                 onChange={(e) => {
                   setSize({ ...size, frameSize: e.target.value });
                 }}
-                value={items.size}
+                value={size.frameSize}
               >
                 <option>Select...</option>
                 {record.frameData?.map((item) => (
                   <option
                     key={item.id}
-                    // value={item.id}
-                    value={item.size}
+                    value={item.id}
+                    // selected={item.size === size.frame}
                   >
                     {item.width} * {item.height}
                   </option>
@@ -402,6 +408,7 @@ function Quotation() {
                 onChange={(e) => {
                   calculate(e.target.value, "frame");
                 }}
+                defaultValue={Qty("frame")}
               />
             </div>
 
@@ -413,7 +420,8 @@ function Quotation() {
                 className="form-control"
                 placeholder=""
                 required
-                value={price.frame}
+                // value={price.frame}
+                defaultValue={Price("frame")}
               />
             </div>
           </div>
@@ -432,6 +440,7 @@ function Quotation() {
                   setSize({ ...size, mountSize: e.target.value });
                   console.log(145, e.target.value, size);
                 }}
+                value={size.mountSize}
               >
                 <option value="all">Select...</option>
                 {record.mountData?.map((item) => (
@@ -457,6 +466,7 @@ function Quotation() {
                 onChange={(e) => {
                   calculate(e.target.value, "mount");
                 }}
+                defaultValue={Qty("mount")}
               />
             </div>
 
@@ -467,7 +477,8 @@ function Quotation() {
                 name="price.mount"
                 className="form-control"
                 placeholder=""
-                value={price.mount}
+                // value={price.mount}
+                defaultValue={Price("mount")}
                 required
               />
             </div>
@@ -485,15 +496,14 @@ function Quotation() {
                 onChange={(e) =>
                   setSize({ ...size, glassSize: e.target.value })
                 }
+                value={size.glassSize}
               >
                 <option>Select...</option>
                 {record.glassData?.map((item) => (
                   <option
                     key={item.id}
-                    value={item.id}
-                    // selected={
-                    //   newdata?.newdata?.items?.size === items?.name || ""
-                    // }
+                    value={item.size}
+                    selected={item.width * item.height === size.glassSize}
                   >
                     {item.width} * {item.height}
                   </option>
@@ -510,7 +520,7 @@ function Quotation() {
                 onChange={(e) => {
                   calculate(e.target.value, "glass");
                 }}
-                // defaultValue={newdata?.newdata?.items[2]?.qty}
+                defaultValue={Qty("glass")}
               />
             </div>
 
@@ -520,7 +530,8 @@ function Quotation() {
               <input
                 type="text"
                 name="price.glass"
-                value={price.glass}
+                // value={price.glass}
+                defaultValue={Price("glass")}
                 className="form-control"
                 placeholder=""
                 required
@@ -540,6 +551,7 @@ function Quotation() {
                 onChange={(e) =>
                   setSize({ ...size, hardboardSize: e.target.value })
                 }
+                value={size.hardboardSize}
               >
                 <option>Select...</option>
                 {record.hardboardData?.map((item) => (
@@ -564,8 +576,9 @@ function Quotation() {
                 placeholder=""
                 onChange={(e) => {
                   calculate(e.target.value, "hardboard");
+                  calculateEdit(e.target.value);
                 }}
-                // defaultValue={newdata?.items[3]?.qty}
+                defaultValue={Qty("hardboard")}
                 required
               />
             </div>
@@ -575,7 +588,8 @@ function Quotation() {
               <input
                 type="price"
                 name="price.hardboard"
-                value={price.hardboard}
+                // value={price.hardboard}
+                defaultValue={Price("hardboard")}
                 className="form-control"
                 placeholder=""
                 required
@@ -628,7 +642,8 @@ function Quotation() {
             <input
               type="text"
               className="form-control"
-              value={total}
+              // value={total}
+              defaultValue={newdata?.newdata?.total}
               placeholder=""
               required
             />
@@ -678,7 +693,8 @@ function Quotation() {
             <input
               type="text"
               className="form-control"
-              value={grandTotal}
+              // value={grandTotal}
+              defaultValue={newdata?.newdata?.grandTotal}
               required
             />
           </div>
