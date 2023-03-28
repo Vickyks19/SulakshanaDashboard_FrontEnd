@@ -1,23 +1,23 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react';
 // import "./QuotationNo.css";
-import { Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Text, View, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   container: {
-    borderBottom: "1px solid black",
+    borderBottom: '1px solid black',
   },
 
   quotationNoContainer: {
-    flexDirection: "row",
-    marginTop: "30px",
-    paddingLeft: "2%",
+    flexDirection: 'row',
+    marginTop: '30px',
+    paddingLeft: '2%',
   },
 
-  quotationNo: { fontSize: "13px", marginLeft: "-5px" },
-  label: { width: "20%", fontSize: "15px" },
+  quotationNo: { fontSize: '13px', marginLeft: '-5px' },
+  label: { width: '20%', fontSize: '15px' },
 
-  quotationDateContainer: { flexDirection: "row", padding: "2%" },
-  quotationDate: { fontSize: "13px", marginLeft: "-60px" },
+  quotationDateContainer: { flexDirection: 'row', padding: '2%' },
+  quotationDate: { fontSize: '13px', marginLeft: '-60px' },
 });
 
 function QuotationNo({ quotationNew }) {
@@ -25,7 +25,7 @@ function QuotationNo({ quotationNew }) {
   return (
     <View style={styles.container}>
       <View style={styles.quotationNoContainer}>
-        <Text style={styles.label}>Quotation No:</Text>
+        <Text style={styles.label}>Quotation No:11</Text>
         <Text style={styles.quotationNo}>
           {quotationNew?.quotationNew?.quotationNo}
         </Text>

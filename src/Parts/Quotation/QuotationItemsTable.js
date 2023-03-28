@@ -1,5 +1,5 @@
-import React from "react";
-import { Text, View, StyleSheet } from "@react-pdf/renderer";
+import React from 'react';
+import { Text, View, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
   // container_table: {
@@ -99,175 +99,88 @@ const styles = StyleSheet.create({
   // },
 
   table: {
-    display: "table",
-    width: "auto",
-    borderStyle: "solid",
-    borderWidth: 1,
+    display: 'table',
+    width: '100%',
+    border: '1px solid grey',
     borderRightWidth: 0,
     borderBottomWidth: 0,
     marginTop: 30,
-    fontSize: "15px",
-    marginLeft: 3,
+    fontSize: '15px',
   },
   tableRow: {
-    margin: "auto",
-    flexDirection: "row",
+    margin: 'auto',
+    flexDirection: 'row',
   },
   tableCol: {
-    width: "25%",
-    borderStyle: "solid",
-    borderWidth: 1,
+    width: '25%',
+    border: '1px solid grey',
     borderLeftWidth: 0,
     borderTopWidth: 0,
   },
   tableCell: {
-    margin: "auto",
+    margin: 'auto',
     marginTop: 5,
-    fontSize: 11,
+    fontSize: 10,
+  },
+  tableHeader: {
+    fontSize: 10,
+    margin: '5 5 2 5',
+    fontWeight: 'bold',
+    textAlign: 'right',
   },
 });
 
 function QuotationItemsTable({ quotationNew }) {
+  console.log(22, quotationNew);
   return (
-    <View style={styles.table}>
-      <View style={styles.tableRow}>
-        <View style={styles.tableCol}>
-          <Text style={[styles.tableCell, { fontSize: 13 }]}>
-            Item Description
-          </Text>
+    <>
+      <View style={styles.table}>
+        <View style={[styles.tableRow, { backgroundColor: 'lightgray' }]}>
+          <View style={[styles.tableCol, { width: '4%' }]}>
+            <Text style={[styles.tableHeader, { textAlign: 'center' }]}>#</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '60%' }]}>
+            <Text style={[styles.tableHeader, { textAlign: 'left' }]}>
+              Item & Description
+            </Text>
+          </View>
+          <View style={[styles.tableCol, { width: '12%' }]}>
+            <Text style={[styles.tableHeader]}>Qty</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '12%' }]}>
+            <Text style={[styles.tableHeader]}>Rate</Text>
+          </View>
+          <View style={[styles.tableCol, { width: '12%' }]}>
+            <Text style={[styles.tableHeader]}>Amount</Text>
+          </View>
         </View>
-        <View style={styles.tableCol}>
-          <Text style={[styles.tableCell, { fontSize: 13 }]}>Qty</Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={[styles.tableCell, { fontSize: 13 }]}>Rate</Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={[styles.tableCell, { fontSize: 13 }]}>Amount</Text>
-        </View>
+
+        {quotationNew.quotationNew.items?.map((e, i) => {
+          return (
+            <View style={styles.tableRow}>
+              <View style={[styles.tableCol, { width: '4%' }]}>
+                <Text style={[styles.tableCell]}>{i + 1}</Text>
+              </View>
+              <View style={[styles.tableCol, { width: '60%' }]}>
+                <Text style={[styles.tableCell]}>
+                  {e?.size || ''} {e?.name || ''}
+                </Text>
+              </View>
+              <View style={[styles.tableCol, { width: '12%' }]}>
+                <Text style={[styles.tableCell]}>{e?.qty}</Text>
+              </View>
+              <View style={[styles.tableCol, { width: '12%' }]}>
+                <Text style={styles.tableCell}>{e?.price}</Text>
+              </View>
+              <View style={[styles.tableCol, { width: '12%' }]}>
+                <Text style={styles.tableCell}>{e?.price}</Text>
+              </View>
+            </View>
+          );
+        })}
       </View>
 
-      <View style={styles.tableRow}>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[0]?.size || ""}{" "}
-            {quotationNew?.quotationNew.items[0]?.name || ""}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[0]?.qty}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[0]?.price}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[0]?.price}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[1]?.size || ""}{" "}
-            {quotationNew?.quotationNew.items[1]?.name || ""}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[1]?.qty}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[1]?.price}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[1]?.price}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[2]?.size || ""}{" "}
-            {quotationNew?.quotationNew.items[2]?.name || ""}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[2]?.qty}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[2]?.price}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[2]?.price}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[3]?.size || ""} {""}
-            {quotationNew?.quotationNew.items[3]?.name || ""}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[3]?.qty}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[3]?.price}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[3]?.price}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[4]?.size || ""} {""}
-            {quotationNew?.quotationNew.items[4]?.name || ""}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[4]?.qty}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[4]?.price}
-          </Text>
-        </View>
-        <View style={styles.tableCol}>
-          <Text style={styles.tableCell}>
-            {quotationNew?.quotationNew.items[4]?.price}
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.tableRow}>
+      {/* <View style={styles.tableRow}>
         <View style={styles.tableCol}>
           <Text style={styles.tableCell}></Text>
         </View>
@@ -299,8 +212,8 @@ function QuotationItemsTable({ quotationNew }) {
             {quotationNew.quotationNew?.grandTotal}
           </Text>
         </View>
-      </View>
-    </View>
+      </View>*/}
+    </>
   );
 }
 
