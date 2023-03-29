@@ -9,9 +9,9 @@ function Quotation() {
   const [quotation, setQuotation] = useState([]);
 
   const location = useLocation();
-  console.log(14, location.state);
+  // console.log(14, location.state);
   const newdata = location?.state || {};
-  console.log(15, newdata);
+  // console.log(15, newdata);
 
   const [price, setPrice] = useState({
     frame: 0,
@@ -21,9 +21,6 @@ function Quotation() {
     sellingRate: 0,
   });
 
-  // const [qty, setQty] = useState({});
-
-  // const [qty, setQty] = useState({});
   const [withTax, setWithTAx] = useState(false);
   const [withoutTax, setWithoutTAx] = useState("");
   let navigate = useNavigate();
@@ -41,7 +38,7 @@ function Quotation() {
   // const [sellingRate, setSellingRate] = useState(0);
 
   const [size, setSize] = useState({});
-  // console.log(42, size, size.glassSize);
+  console.log(42, size, size.glassSize);
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
@@ -157,7 +154,7 @@ function Quotation() {
 
     console.log(items);
     const index = items.findIndex((item) => {
-      console.log(0, item, item.Name);
+      // console.log(0, item, item.Name);
       return item?.Name === "painting";
     });
     console.log(1, index);
@@ -215,47 +212,6 @@ function Quotation() {
     }
   };
 
-  // const calculateEdit = (qty, entity) => {
-
-  //   const rate =
-  //     record[`${entity}Data`].find((item) => {
-  //       return (
-  //         item.width.toString() + " * " + item.height.toString() ===
-  //         size[`${entity}Size`]
-  //       );
-  //     })?.rate || 0;
-
-  //   const newprice = qty * rate;
-
-  //   setPrice({ ...price, [entity]: newprice });
-
-  //   setItems([
-  //     ...items,
-  //     {
-  //       name: entity,
-  //       size: size?.[`${entity}Size`],
-  //       price,
-  //       qty,
-  //     },
-  //   ]);
-
-  //   const index = items.findIndex((item) => {
-  //     return item.name === entity;
-  //   });
-
-  //   if (index > -1) {
-  //     const itemNew = items;
-  //     itemNew.splice(index, 1, {
-  //       name: entity,
-  //       size: size?.[`${entity}Size`],
-  //       price,
-  //       qty,
-  //     });
-
-  //     setItems(itemNew);
-  //   }
-  // };
-
   useEffect(() => {
     const value =
       price.frame +
@@ -273,12 +229,10 @@ function Quotation() {
       return item;
     });
     setItems(newItems);
-    console.log(183, newItems, price.sellingRate);
   }, [price]);
 
   const onwithTax = () => {
     const tax = (total * Math.floor(withTax)) / 100;
-    console.log(500, +tax);
     setTax(tax);
     const grandTotal = total + tax;
     setgrandToatal(grandTotal);
@@ -290,7 +244,7 @@ function Quotation() {
     setgrandToatal(grandTotal);
   };
 
-  const calculateEdit = (qty, entity) => {
+  const sizeEdit = (qty, entity) => {
     let newsize = {};
     const newSize = newdata?.newdata?.items?.map((item) => {
       if (item?.Name !== "painting") {
@@ -299,39 +253,56 @@ function Quotation() {
     });
 
     const newObj = Object.assign(newsize, ...newSize);
-    console.log(262, newObj);
     setSize(newObj);
   };
 
   const Qty = (entity) => {
-    console.log(280, entity);
     const newQty = newdata?.newdata?.items?.find((item) => {
       if (item.name === entity) {
-        console.log(285, item.qty);
         return item.qty;
       }
     });
-    console.log(288, newQty, newQty?.qty);
     return newQty?.qty;
   };
 
   const Price = (entity) => {
-    console.log(280, entity);
     const newPrices = newdata?.newdata?.items?.find((item) => {
       if (item.name === entity) {
-        console.log(285, item.price);
         return item.price;
       }
     });
-    console.log(288, newPrices?.price);
     return newPrices?.price;
+  };
+
+  const PaintingEdit = () => {
+    console.log(287, newdata?.newdata?.items);
+    const paintEdit = newdata?.newdata?.items?.find((item) => {
+      console.log(289, item.Name);
+      if (item.Name === "painting") {
+        console.log(291, item?.name);
+        return item?.name;
+      }
+    });
+    console.log(295, paintEdit?.name);
+    return setPaintingName(paintEdit?.name);
+  };
+
+  const SellingRateEdit = (entity) => {
+    const SellingRateEdit = newdata?.newdata?.items?.find((item) => {
+      if (item.Name === entity) {
+        return item.price;
+      }
+    });
+    return SellingRateEdit?.price;
   };
 
   useEffect(() => {
     if (newdata) {
-      calculateEdit();
+      sizeEdit();
       Qty();
       Price();
+      PaintingEdit();
+      SellingRateEdit();
     }
   }, []);
 
@@ -384,16 +355,11 @@ function Quotation() {
               >
                 <option>Select...</option>
                 {record.creationData?.map((item, index) => (
-                  <option
-                    key={index}
-                    //  value={item.customername}
-                    value={item.id}
-                  >
+                  <option key={index} value={item.id}>
                     {item.firstname + "" + item.middlename + "" + item.lastname}
                   </option>
                 ))}
               </select>
-              {/* )} */}
             </div>
             <div className=" col-md-4 mb-3">
               <label>Billing Address</label>
@@ -428,7 +394,7 @@ function Quotation() {
               >
                 <option>Select...</option>
                 {record.frameData?.map((item) => (
-                  <option key={item.id} value={item.size}>
+                  <option key={item.id} value={item.id}>
                     {item.width} * {item.height}
                   </option>
                 ))}
@@ -445,6 +411,7 @@ function Quotation() {
                 required
                 onChange={(e) => {
                   calculate(e.target.value, "frame");
+                  console.log(414, e.target.value);
                 }}
                 defaultValue={Qty("frame")}
               />
@@ -458,9 +425,8 @@ function Quotation() {
                 className="form-control"
                 placeholder=""
                 required
-                // value={price.frame}
-                defaultValue={Price("frame")}
                 value={price.frame}
+                defaultValue={Price("frame")}
               />
             </div>
           </div>
@@ -518,7 +484,6 @@ function Quotation() {
                 placeholder=""
                 // value={price.mount}
                 defaultValue={Price("mount")}
-                value={price.mount}
                 required
               />
             </div>
@@ -544,10 +509,6 @@ function Quotation() {
                     key={item.id}
                     value={item.size}
                     selected={item.width * item.height === size.glassSize}
-
-                    // selected={
-                    //   newdata?.newdata?.items?.size === items?.name || ""
-                    // }
                   >
                     {item.width} * {item.height}
                   </option>
@@ -565,7 +526,6 @@ function Quotation() {
                   calculate(e.target.value, "glass");
                 }}
                 defaultValue={Qty("glass")}
-                // defaultValue={newdata?.newdata?.items[2]?.qty}
               />
             </div>
 
@@ -577,7 +537,6 @@ function Quotation() {
                 name="price.glass"
                 // value={price.glass}
                 defaultValue={Price("glass")}
-                value={price.glass}
                 className="form-control"
                 placeholder=""
                 required
@@ -622,10 +581,8 @@ function Quotation() {
                 placeholder=""
                 onChange={(e) => {
                   calculate(e.target.value, "hardboard");
-                  calculateEdit(e.target.value);
                 }}
                 defaultValue={Qty("hardboard")}
-                // defaultValue={newdata?.items[3]?.qty}
                 required
               />
             </div>
@@ -637,7 +594,6 @@ function Quotation() {
                 name="price.hardboard"
                 // value={price.hardboard}
                 defaultValue={Price("hardboard")}
-                value={price.hardboard}
                 className="form-control"
                 placeholder=""
                 required
@@ -658,16 +614,15 @@ function Quotation() {
                   setPaintingName(e.target.value);
                   setPaint(e.target.value);
                 }}
+                // defaultValue={() => {
+                //   PaintingEdit("painting");
+                //   console.log(632, PaintingEdit("painting"));
+                // }}
+                value={paintingName}
               >
                 <option>Select...</option>
                 {record.paintingData?.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                    // selected={
-                    //   newdata?.newdata.items.name === items.paintingName || ""
-                    // }
-                  >
+                  <option key={item.id} value={item.id}>
                     <option>{item.paintingName}</option>
                   </option>
                 ))}
@@ -678,7 +633,8 @@ function Quotation() {
               <label>SellingRate</label>
               <input
                 type="price"
-                value={price.sellingRate}
+                // value={price.sellingRate}
+                defaultValue={SellingRateEdit("painting")}
                 className="form-control"
                 placeholder=""
                 required
@@ -692,7 +648,6 @@ function Quotation() {
               className="form-control"
               // value={total}
               defaultValue={newdata?.newdata?.total}
-              value={total}
               placeholder=""
               required
             />
@@ -744,7 +699,6 @@ function Quotation() {
               className="form-control"
               // value={grandTotal}
               defaultValue={newdata?.newdata?.grandTotal}
-              value={grandTotal}
               required
             />
           </div>
