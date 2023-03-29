@@ -1,25 +1,18 @@
-import React, { useState, useEffect, Fragment } from "react";
+import "./Frame.css";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Modal from "react-bootstrap/Modal";
-import { Button } from "react-bootstrap";
-import { Link, Navigate } from "react-router-dom";
+import { Button, IconButton, Modal } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { MdFilterFrames } from "react-icons/md";
 import { SiGlassdoor } from "react-icons/si";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
 import { HiOutlineReceiptTax } from "react-icons/hi";
 import QuotationView from "./QuotationView";
 import "./QuotationCreation.css";
 
 import { useNavigate } from "react-router-dom";
-// import DatePicker from "react-date-picker";
-
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  PDFViewer,
-} from "@react-pdf/renderer";
 
 import "./Frame.css";
 
@@ -433,12 +426,13 @@ function QuotationCreation() {
                           <div className="card-header">
                             {/* <h5>Quotation</h5> */}
                             <a href="/quote">
-                              <button
-                                className="btn btn-primary btn-sm"
+                              <Button
                                 onClick={handlePostShow}
+                                variant="contained"
+                                color="primary"
                               >
-                                Add
-                              </button>
+                                Add Quotation
+                              </Button>
                             </a>
                           </div>
                           <div className="card-block table-border-style">
@@ -446,7 +440,8 @@ function QuotationCreation() {
                               <table className="table">
                                 <thead>
                                   <tr>
-                                    <th>Quotation NO</th>
+                                    <th></th>
+                                    <th>Quotation No.</th>
                                     <th>Customer Name</th>
                                     {/* <th>Phonenumber</th> */}
                                     {/* <th>Address</th> */}
@@ -454,7 +449,7 @@ function QuotationCreation() {
                                     <th>Grand Total</th>
                                     {/* <th>EmailID</th> */}
                                     {/* <th>Gender</th> */}
-                                    <th>Action</th>
+                                    <th>Actions</th>
                                   </tr>
                                 </thead>
                                 <tbody>
@@ -462,19 +457,18 @@ function QuotationCreation() {
                                     return (
                                       <tr key={item._id}>
                                         <td>
-                                          <span>
+                                          <span style={{ marginRight: 10 }}>
                                             <input type="checkbox" />
                                           </span>
-                                          {item.quotationNo}
                                         </td>
+                                        <td>{item.quotationNo}</td>
                                         <td>{item.customername}</td>
                                         <td>{item.billingaddress}</td>
                                         <td>{item.grandTotal}</td>
                                         <td style={{ minWidth: 190 }}>
-                                          <button
-                                            size="sm"
-                                            varient="primary"
-                                            value="Click to Open QuatationView"
+                                          <Button
+                                            size="small"
+                                            variant="outlined"
                                             onClick={(e) => {
                                               handleView(
                                                 item._id,
@@ -483,11 +477,10 @@ function QuotationCreation() {
                                             }}
                                           >
                                             View
-                                          </button>
+                                          </Button>
 
-                                          <button
-                                            size="sm"
-                                            varient="primary"
+                                          <IconButton
+                                            size="small"
                                             onClick={(e) => {
                                               captureEdit(
                                                 item._id
@@ -502,19 +495,25 @@ function QuotationCreation() {
                                                 // )
                                               );
                                             }}
+                                            style={{ margin: "0 5px" }}
                                           >
-                                            Edit
-                                          </button>
+                                            <EditIcon
+                                              style={{ color: "#3b6ba5" }}
+                                              fontSize="small"
+                                            />
+                                          </IconButton>
 
-                                          <button
-                                            size="sm"
-                                            varient="primary"
+                                          <IconButton
+                                            size="small"
                                             onClick={(e) => {
                                               handleDelete(e);
                                             }}
                                           >
-                                            Delete
-                                          </button>
+                                            <DeleteIcon
+                                              style={{ color: "#f03939" }}
+                                              fontSize="small"
+                                            />
+                                          </IconButton>
                                         </td>
                                       </tr>
                                     );
@@ -522,20 +521,13 @@ function QuotationCreation() {
                                 </tbody>
                               </table>
                             </div>
-                            {view ? (
-                              <div className="popup-box">
-                                <Fragment className="box">
-                                  <PDFViewer
-                                    width="1000"
-                                    height="600"
-                                    className="pdf"
-                                  >
-                                    <QuotationView quotationNew={filterNew} />
-                                  </PDFViewer>
-                                </Fragment>
-                              </div>
-                            ) : null}
 
+                            <Modal open={view}>
+                              <QuotationView
+                                quotationNew={filterNew}
+                                onClose={() => setViewShow(false)}
+                              />
+                            </Modal>
                             {/* {viewEdit ? (
                               <div className="popup-box">
                                 <Quotation />
