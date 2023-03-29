@@ -15,3 +15,7 @@
   border: 1px solid #999;
   overflow: auto;
 }
+
+.a {
+  color: 'white' !important;
+}

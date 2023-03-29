@@ -149,7 +149,7 @@ p {
   left: 40px;
 }
 .author-details img ~ .dot2 {
-  left: 50px;
+  left: 50px; 
 }
 .author-details .recent-contain h6 {
   font-size: 1rem;
@@ -250,7 +250,7 @@ p {
   display: inline-block;
 }
 .card .card-header span {
-  color: #919aa3;
+  /* color: #919aa3; */
   display: block;
   font-size: 13px;
   margin-top: 5px;

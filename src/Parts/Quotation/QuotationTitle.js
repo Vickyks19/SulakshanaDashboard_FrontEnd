@@ -1,24 +1,24 @@
-import React from "react";
-import { Text, View, StyleSheet, Image } from "@react-pdf/renderer";
-import shopInfo from "./Quotation.constants";
-import logo from "../../images/sulakshana.jpg";
+import React from 'react';
+import { Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import shopInfo from './Quotation.constants';
+import logo from '../../images/sulakshana.jpg';
 
 const styles = StyleSheet.create({
   titleContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "left",
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'left',
     lineHeight: 1.5,
-    borderBottom: "1px solid grey",
-    border: "1px solid grey",
-    padding: "2px 0",
+    borderBottom: '1px solid grey',
+    border: '1px solid grey',
+    padding: '2px 0',
   },
   title: {
-    fontFamily: "Helvetica-Bold",
-    fontSize: "14px",
+    fontFamily: 'Helvetica-Bold',
+    fontSize: '14px',
   },
   address: {
-    fontSize: "10px",
+    fontSize: '10px',
   },
   logo: {
     width: 150,
