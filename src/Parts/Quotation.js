@@ -9,9 +9,9 @@ function Quotation() {
   const [quotation, setQuotation] = useState([]);
 
   const location = useLocation();
-  // console.log(14, location.state);
   const newdata = location?.state || {};
-  // console.log(15, newdata);
+
+  const [id, setId] = useState("");
 
   const [price, setPrice] = useState({
     frame: 0,
@@ -21,11 +21,12 @@ function Quotation() {
     sellingRate: 0,
   });
 
-  const [withTax, setWithTAx] = useState(false);
-  const [withoutTax, setWithoutTAx] = useState("");
+  const [withTax, setWithTax] = useState(false);
   let navigate = useNavigate();
 
-  const [quotationNo, setQuotationNo] = useState(0);
+  const [quotationNo, setQuotationNo] = useState(
+    newdata?.newdata?.quotationNo || 0
+  );
   const [date, setDate] = useState();
   const [customername, setCustomername] = useState(
     newdata?.newdata?.customername || ""
@@ -35,14 +36,15 @@ function Quotation() {
   );
 
   const [paintingName, setPaintingName] = useState("");
-  // const [sellingRate, setSellingRate] = useState(0);
 
   const [size, setSize] = useState({});
-  console.log(42, size, size.glassSize);
   const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(newdata?.newdata?.total || 0);
+  console.log(43, total, newdata?.newdata?.total);
   const [tax, setTax] = useState(0);
-  const [grandTotal, setgrandToatal] = useState(0);
+  const [grandTotal, setgrandToatal] = useState(
+    newdata?.newdata?.grandTotal || 0
+  );
 
   let addMode = {};
   let editMode = {};
@@ -85,7 +87,6 @@ function Quotation() {
       .then((data) => {
         setQuotation([data.data.data, ...quotation]);
 
-        console.log(12, quotation);
         navigate("/quotation");
       })
       .catch((err) => {
@@ -93,35 +94,42 @@ function Quotation() {
       });
   };
 
-  // const handleEdit = (e) => {
-  //   console.log(e);
-  //   e.preventDefault();
+  const handleEdit = (e, id) => {
+    console.log(
+      95,
+      e,
+      date,
+      customername,
+      billingaddress,
+      items,
+      total,
+      grandTotal
+    );
+    e.preventDefault();
+    axios
+      .put(`http://localhost:4000/quotationData/${id}`, {
+        quotationNo: quotationNo,
+        date: date,
+        customername: customername,
+        billingaddress: billingaddress,
+        items: items,
+        total: total,
+        grandTotal: grandTotal,
+      })
 
-  //   axios
-  //     .put(`http://localhost:4000/quotationData/${id}`, {
-  //       quotationNo: quotationNo,
-  //       date: date,
-  //       customername: customername,
-  //       billingaddress: billingaddress,
-  //       items: items,
-  //       total: total,
-  //       grandTotal: grandTotal,
-  //     })
-
-  //     .then((data) => {
-  //       console.log(1, data);
-  //       const index = quotation.findIndex((e) => e._id === id);
-  //       console.log(12, index);
-  //       const newFrames = quotation;
-  //       newFrames.splice(index, 1, data.data.data);
-  //       console.log(newFrames);
-  //       setQuotation(newFrames);
-  //       setEditShow(false);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+      .then((data) => {
+        console.log(1, data);
+        const index = quotation.findIndex((e) => e._id === id);
+        console.log(12, index);
+        const newFrames = quotation;
+        newFrames.splice(index, 1, data.data.data);
+        console.log(118, newFrames);
+        setQuotation(newFrames);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const setSelected = (customername) => {
     let billingaddress =
@@ -152,23 +160,18 @@ function Quotation() {
       },
     ]);
 
-    console.log(items);
     const index = items.findIndex((item) => {
-      // console.log(0, item, item.Name);
       return item?.Name === "painting";
     });
-    console.log(1, index);
     if (index > -1) {
       const newPaint = items;
-      console.log(2, newPaint);
       newPaint.splice(index, 1, {
         name: paintingName,
         Name: "painting",
         price: sellingRate,
-        test: sellingRate,
+        // test: sellingRate,
       });
       setItems(newPaint);
-      console.log(3, newPaint);
     }
   };
 
@@ -221,6 +224,7 @@ function Quotation() {
       price.sellingRate;
 
     setTotal(value);
+    console.log(value);
 
     const newItems = items.map((item) => {
       if (item?.Name !== "painting") {
@@ -244,16 +248,21 @@ function Quotation() {
     setgrandToatal(grandTotal);
   };
 
-  const sizeEdit = (qty, entity) => {
-    let newsize = {};
-    const newSize = newdata?.newdata?.items?.map((item) => {
-      if (item?.Name !== "painting") {
-        return { [`${item.name}Size`]: item.size };
-      }
-    });
+  const sizeEdit = () => {
+    if (newdata?.newdata) {
+      if (newdata) {
+        let newsize = {};
 
-    const newObj = Object.assign(newsize, ...newSize);
-    setSize(newObj);
+        newdata?.newdata?.items?.map((item) => {
+          if (item?.Name !== "painting") {
+            newsize[`${item.name}Size`] = item.size;
+            return { [`${item.name}Size`]: item.size };
+          }
+        });
+
+        setSize(newsize);
+      }
+    }
   };
 
   const Qty = (entity) => {
@@ -265,45 +274,47 @@ function Quotation() {
     return newQty?.qty;
   };
 
-  const Price = (entity) => {
-    const newPrices = newdata?.newdata?.items?.find((item) => {
-      if (item.name === entity) {
-        return item.price;
-      }
-    });
-    return newPrices?.price;
+  const Price = () => {
+    if (newdata?.newdata) {
+      let priceNew = {};
+
+      newdata?.newdata?.items?.map((item) => {
+        if (item?.Name !== "painting") {
+          priceNew[`${item.name}`] = item.price;
+          return { [`${item.name}`]: item.price };
+        } else {
+          priceNew.sellingRate = item.price;
+        }
+      });
+
+      setPrice(priceNew);
+    }
   };
 
   const PaintingEdit = () => {
-    console.log(287, newdata?.newdata?.items);
-    const paintEdit = newdata?.newdata?.items?.find((item) => {
-      console.log(289, item.Name);
-      if (item.Name === "painting") {
-        console.log(291, item?.name);
-        return item?.name;
-      }
-    });
-    console.log(295, paintEdit?.name);
-    return setPaintingName(paintEdit?.name);
+    if (newdata?.newdata) {
+      const paintEdit = newdata?.newdata?.items?.find((item) => {
+        if (item.Name === "painting") {
+          return item?.name;
+        }
+      });
+      return setPaintingName(paintEdit?.name);
+    }
   };
 
-  const SellingRateEdit = (entity) => {
-    const SellingRateEdit = newdata?.newdata?.items?.find((item) => {
-      if (item.Name === entity) {
-        return item.price;
-      }
-    });
-    return SellingRateEdit?.price;
-  };
+  // useEffect(() => {
+  //   if (newdata?.newdata) {
+  //     Number(newdata?.newdata?.total);
+  //     console.log(305, total);
+  //     setTotal(newdata?.newdata?.total);
+  //   }
+  // }, []);
 
   useEffect(() => {
-    if (newdata) {
-      sizeEdit();
-      Qty();
-      Price();
-      PaintingEdit();
-      SellingRateEdit();
-    }
+    sizeEdit();
+    Qty();
+    Price();
+    PaintingEdit();
   }, []);
 
   useEffect(() => {
@@ -311,415 +322,429 @@ function Quotation() {
   }, []);
 
   return (
-    <>
-      <div className="container" style={newdata ? editMode : addMode}>
-        <div className="Add">
-          <div className="form-row">
-            <div className="col-md-4 mb-3">
-              <label>Quotation No</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder=""
-                onChange={(e) => setQuotationNo(e.target.value)}
-                required
-                defaultValue={newdata?.newdata?.quotationNo}
-              />
-            </div>
-            <div className="col-md-4 mb-3">
-              <label>Date</label>
-              <input
-                type="date"
-                className="form-control"
-                placeholder=""
-                onChange={(e) => setDate(e.target.value)}
-                required
-                defaultValue={newdata?.newdata?.date}
-              />
-            </div>
-          </div>
+    <div className="pcoded-content">
+      <h5>Quotation</h5>
+      <div className="pcoded-inner-content">
+        {/* Main-body start */}
+        <div className="main-body">
+          <div className="page-wrapper">
+            {/* Page-body start */}
 
-          <div className="form-row">
-            <div className=" col-md-4 mb-3">
-              <label>Customer Name</label>
-              <select
-                id="inputState"
-                searchable={true}
-                class="form-control"
-                onChange={(e) => {
-                  setCustomername(e.target.value);
-                  setSelected(e.target.value);
-                  console.log(300, e.target.value);
-                }}
-                value={customername}
-              >
-                <option>Select...</option>
-                {record.creationData?.map((item, index) => (
-                  <option key={index} value={item.id}>
-                    {item.firstname + "" + item.middlename + "" + item.lastname}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className=" col-md-4 mb-3">
-              <label>Billing Address</label>
-
-              <input
-                type="text"
-                value={billingaddress}
-                className="form-control"
-                placeholder=""
-                required
-              />
-            </div>
-          </div>
-
-          <div className="form-group col-md-4 mt-3">
-            <label>Items</label>
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-4 mt-3">
-              <label style={{ margin: "10% 50%" }}>Frmaes</label>
-            </div>
-            <div className="form-group col-md-2 mt-3">
-              <label>Sizes</label>
-
-              <select
-                id="inputState"
-                class="form-control"
-                onChange={(e) => {
-                  setSize({ ...size, frameSize: e.target.value });
-                }}
-                value={size.frameSize}
-              >
-                <option>Select...</option>
-                {record.frameData?.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.width} * {item.height}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group col-md-1 mt-3">
-              <label>Qty</label>
-              <input
-                type="text"
-                name="qty"
-                id="qty"
-                className="form-control"
-                placeholder=""
-                required
-                onChange={(e) => {
-                  calculate(e.target.value, "frame");
-                  console.log(414, e.target.value);
-                }}
-                defaultValue={Qty("frame")}
-              />
-            </div>
-
-            <div className="form-group col-md-1 mt-3">
-              <label>Price</label>
-              <input
-                type="text"
-                name="price.frame"
-                className="form-control"
-                placeholder=""
-                required
-                value={price.frame}
-                defaultValue={Price("frame")}
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group col-md-4 mt-3">
-              <label style={{ margin: "10% 50%" }}>Mount</label>
-            </div>
-            <div className="form-group col-md-2 mt-3">
-              <label>Sizes</label>
-
-              <select
-                id="inputState"
-                class="form-control"
-                onChange={(e) => {
-                  setSize({ ...size, mountSize: e.target.value });
-                  console.log(145, e.target.value, size);
-                }}
-                value={size.mountSize}
-              >
-                <option value="all">Select...</option>
-                {record.mountData?.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                    // selected={
-                    //   newdata?.newdata?.items[{}]?.size === items?.size || ""
-                    // }
+            <div className="page-body">
+              {/* Basic table card start */}
+              <div className="card">
+                <div className="card-header">
+                  <div
+                    className="container"
+                    style={newdata ? editMode : addMode}
                   >
-                    {item.width} * {item.height}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group col-md-1 mt-3">
-              <label>Qty</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder=""
-                required
-                onChange={(e) => {
-                  calculate(e.target.value, "mount");
-                }}
-                defaultValue={Qty("mount")}
-              />
-            </div>
+                    <div className="Add">
+                      <div className="form-row">
+                        <div className="col-md-4 mb-3">
+                          <label>Quotation No</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder=""
+                            onChange={(e) => setQuotationNo(e.target.value)}
+                            required
+                            value={quotationNo}
+                          />
+                        </div>
+                        <div className="col-md-4 mb-3">
+                          <label>Date</label>
+                          <input
+                            type="date"
+                            className="form-control"
+                            placeholder=""
+                            onChange={(e) => setDate(e.target.value)}
+                            required
+                            defaultValue={newdata?.newdata?.date}
+                          />
+                        </div>
+                      </div>
 
-            <div className="form-group col-md-1 mt-3">
-              <label>Price</label>
-              <input
-                type="text"
-                name="price.mount"
-                className="form-control"
-                placeholder=""
-                // value={price.mount}
-                defaultValue={Price("mount")}
-                required
-              />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-4 mt-3">
-              <label style={{ margin: "10% 50%" }}>Glass</label>
-            </div>
-            <div className="form-group col-md-2 mt-3">
-              <label>Sizes</label>
+                      <div className="form-row">
+                        <div className=" col-md-4 mb-3">
+                          <label>Customer Name</label>
+                          <select
+                            id="inputState"
+                            searchable={true}
+                            class="form-control"
+                            onChange={(e) => {
+                              setCustomername(e.target.value);
+                              setSelected(e.target.value);
+                            }}
+                            value={customername}
+                          >
+                            <option>Select...</option>
+                            {record.creationData?.map((item, index) => (
+                              <option key={index} value={item.id}>
+                                {item.firstname +
+                                  "" +
+                                  item.middlename +
+                                  "" +
+                                  item.lastname}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className=" col-md-4 mb-3">
+                          <label>Billing Address</label>
 
-              <select
-                id="inputState"
-                class="form-control"
-                onChange={(e) =>
-                  setSize({ ...size, glassSize: e.target.value })
-                }
-                value={size.glassSize}
-              >
-                <option>Select...</option>
-                {record.glassData?.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.size}
-                    selected={item.width * item.height === size.glassSize}
-                  >
-                    {item.width} * {item.height}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group col-md-1 mt-3">
-              <label>Qty</label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder=""
-                required
-                onChange={(e) => {
-                  calculate(e.target.value, "glass");
-                }}
-                defaultValue={Qty("glass")}
-              />
-            </div>
+                          <input
+                            type="text"
+                            value={billingaddress}
+                            className="form-control"
+                            placeholder=""
+                            required
+                          />
+                        </div>
+                      </div>
 
-            <div className="form-group col-md-1 mt-3">
-              <label>Price</label>
+                      <div className="form-group col-md-4 mt-3">
+                        <label>Items</label>
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group col-md-4 mt-3">
+                          <label style={{ margin: "10% 50%" }}>Frmaes</label>
+                        </div>
+                        <div className="form-group col-md-2 mt-3">
+                          <label>Sizes</label>
 
-              <input
-                type="text"
-                name="price.glass"
-                // value={price.glass}
-                defaultValue={Price("glass")}
-                className="form-control"
-                placeholder=""
-                required
-              ></input>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-4 mt-3">
-              <label style={{ margin: "10% 50%" }}>Hardboard</label>
-            </div>
-            <div className="form-group col-md-2 mt-3">
-              <label>Sizes</label>
+                          <select
+                            id="inputState"
+                            class="form-control"
+                            onChange={(e) => {
+                              setSize({ ...size, frameSize: e.target.value });
+                            }}
+                            value={size.frameSize}
+                          >
+                            <option>Select...</option>
+                            {record.frameData?.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                {item.width} * {item.height}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Qty</label>
+                          <input
+                            type="text"
+                            name="qty"
+                            id="qty"
+                            className="form-control"
+                            placeholder=""
+                            required
+                            onChange={(e) => {
+                              calculate(e.target.value, "frame");
+                            }}
+                            defaultValue={Qty("frame")}
+                          />
+                        </div>
 
-              <select
-                id="inputState"
-                class="form-control"
-                onChange={(e) =>
-                  setSize({ ...size, hardboardSize: e.target.value })
-                }
-                value={size.hardboardSize}
-              >
-                <option>Select...</option>
-                {record.hardboardData?.map((item) => (
-                  <option
-                    key={item.id}
-                    value={item.id}
-                    // selected={newdata?.newdata.items.size === items.size || {}}
-                  >
-                    <option>
-                      {item.width} * {item.height}
-                    </option>
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group col-md-1 mt-3">
-              <label>Qty</label>
-              <input
-                type="text"
-                name="qty"
-                className="form-control"
-                placeholder=""
-                onChange={(e) => {
-                  calculate(e.target.value, "hardboard");
-                }}
-                defaultValue={Qty("hardboard")}
-                required
-              />
-            </div>
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Price</label>
+                          <input
+                            type="text"
+                            name="price.frame"
+                            className="form-control"
+                            placeholder=""
+                            required
+                            value={price.frame}
+                            defaultValue={price.frame}
+                          />
+                        </div>
+                      </div>
 
-            <div className="form-group col-md-1 mt-3">
-              <label>Price</label>
-              <input
-                type="price"
-                name="price.hardboard"
-                // value={price.hardboard}
-                defaultValue={Price("hardboard")}
-                className="form-control"
-                placeholder=""
-                required
-              />
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-4 mt-3">
-              <label style={{ margin: "10% 50%" }}>Painting</label>
-            </div>
-            <div className="form-group col-md-2 mt-3">
-              <label>PaintingName</label>
+                      <div className="form-row">
+                        <div className="form-group col-md-4 mt-3">
+                          <label style={{ margin: "10% 50%" }}>Mount</label>
+                        </div>
+                        <div className="form-group col-md-2 mt-3">
+                          <label>Sizes</label>
 
-              <select
-                id="inputState"
-                class="form-control"
-                onChange={(e) => {
-                  setPaintingName(e.target.value);
-                  setPaint(e.target.value);
-                }}
-                // defaultValue={() => {
-                //   PaintingEdit("painting");
-                //   console.log(632, PaintingEdit("painting"));
-                // }}
-                value={paintingName}
-              >
-                <option>Select...</option>
-                {record.paintingData?.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    <option>{item.paintingName}</option>
-                  </option>
-                ))}
-              </select>
-            </div>
+                          <select
+                            id="inputState"
+                            class="form-control"
+                            onChange={(e) => {
+                              setSize({ ...size, mountSize: e.target.value });
+                            }}
+                            value={size.mountSize}
+                          >
+                            <option value="all">Select...</option>
+                            {record.mountData?.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                {item.width} * {item.height}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Qty</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder=""
+                            required
+                            onChange={(e) => {
+                              calculate(e.target.value, "mount");
+                            }}
+                            defaultValue={Qty("mount")}
+                          />
+                        </div>
 
-            <div className="form-group col-md-1 mt-3">
-              <label>SellingRate</label>
-              <input
-                type="price"
-                // value={price.sellingRate}
-                defaultValue={SellingRateEdit("painting")}
-                className="form-control"
-                placeholder=""
-                required
-              />
-            </div>
-          </div>
-          <div className="form-group col-md-4 mb-3">
-            <label>Total</label>
-            <input
-              type="text"
-              className="form-control"
-              // value={total}
-              defaultValue={newdata?.newdata?.total}
-              placeholder=""
-              required
-            />
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-4 mb-3">
-              <label>Tax</label>
-            </div>
-          </div>
-          <div className="form-row">
-            <div className="form-group col-md-8 mb-6">
-              <div>
-                <input
-                  type="radio"
-                  id="withTax"
-                  onClick={onwithTax}
-                  value="WithTax"
-                  name="tax"
-                />
-                  <label for="withTax">WithTax</label> {" "}
-                <input
-                  type="radio"
-                  id="withoutTax"
-                  onClick={onwithoutTax}
-                  name="tax"
-                  style={{ paddingLeft: "10px" }}
-                />
-                  <label for="withoutTax">Without Tax</label>
-                <select
-                  id="inputState"
-                  class="form-control"
-                  onChange={(e) => setWithTAx(e.target.value)}
-                >
-                  <option>Select...</option>
-                  {record.taxData?.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.taxpercentage}
-                    </option>
-                  ))}
-                </select>
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Price</label>
+                          <input
+                            type="text"
+                            name="price.mount"
+                            className="form-control"
+                            placeholder=""
+                            value={price.mount}
+                            defaultValue={price.mount}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group col-md-4 mt-3">
+                          <label style={{ margin: "10% 50%" }}>Glass</label>
+                        </div>
+                        <div className="form-group col-md-2 mt-3">
+                          <label>Sizes</label>
+
+                          <select
+                            id="inputState"
+                            class="form-control"
+                            onChange={(e) =>
+                              setSize({ ...size, glassSize: e.target.value })
+                            }
+                            value={size.glassSize}
+                          >
+                            <option>Select...</option>
+                            {record.glassData?.map((item) => (
+                              <option
+                                key={item.id}
+                                value={item.size}
+                                selected={
+                                  item.width * item.height === size.glassSize
+                                }
+                              >
+                                {item.width} * {item.height}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Qty</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder=""
+                            required
+                            onChange={(e) => {
+                              calculate(e.target.value, "glass");
+                            }}
+                            defaultValue={Qty("glass")}
+                          />
+                        </div>
+
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Price</label>
+
+                          <input
+                            type="text"
+                            name="price.glass"
+                            value={price.glass}
+                            defaultValue={price.glass}
+                            className="form-control"
+                            placeholder=""
+                            required
+                          ></input>
+                        </div>
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group col-md-4 mt-3">
+                          <label style={{ margin: "10% 50%" }}>Hardboard</label>
+                        </div>
+                        <div className="form-group col-md-2 mt-3">
+                          <label>Sizes</label>
+
+                          <select
+                            id="inputState"
+                            class="form-control"
+                            onChange={(e) =>
+                              setSize({
+                                ...size,
+                                hardboardSize: e.target.value,
+                              })
+                            }
+                            value={size.hardboardSize}
+                          >
+                            <option>Select...</option>
+                            {record.hardboardData?.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                <option>
+                                  {item.width} * {item.height}
+                                </option>
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Qty</label>
+                          <input
+                            type="text"
+                            name="qty"
+                            className="form-control"
+                            placeholder=""
+                            onChange={(e) => {
+                              calculate(e.target.value, "hardboard");
+                            }}
+                            defaultValue={Qty("hardboard")}
+                            required
+                          />
+                        </div>
+
+                        <div className="form-group col-md-1 mt-3">
+                          <label>Price</label>
+                          <input
+                            type="price"
+                            name="price.hardboard"
+                            value={price.hardboard}
+                            defaultValue={price.hardboard}
+                            className="form-control"
+                            placeholder=""
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group col-md-4 mt-3">
+                          <label style={{ margin: "10% 50%" }}>Painting</label>
+                        </div>
+                        <div className="form-group col-md-2 mt-3">
+                          <label>PaintingName</label>
+
+                          <select
+                            id="inputState"
+                            class="form-control"
+                            onChange={(e) => {
+                              setPaintingName(e.target.value);
+                              setPaint(e.target.value);
+                            }}
+                            value={paintingName}
+                          >
+                            <option>Select...</option>
+                            {record.paintingData?.map((item) => (
+                              <option key={item.id} value={item.id}>
+                                <option>{item.paintingName}</option>
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="form-group col-md-2 mt-3">
+                          <label>SellingRate</label>
+                          <input
+                            type="price"
+                            value={price.sellingRate}
+                            defaultValue={price.sellingRate}
+                            className="form-control"
+                            placeholder=""
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="form-group col-md-4 mb-3">
+                        <label>Total</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={total}
+                          placeholder=""
+                          required
+                        />
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group col-md-4 mb-3">
+                          <label>Tax</label>
+                        </div>
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group col-md-8 mb-6">
+                          <div>
+                            <input
+                              type="radio"
+                              id="withTax"
+                              onClick={onwithTax}
+                              value="WithTax"
+                              name="tax"
+                            />
+                              <label for="withTax">WithTax</label> {" "}
+                            <input
+                              type="radio"
+                              id="withoutTax"
+                              onClick={onwithoutTax}
+                              name="tax"
+                              style={{ paddingLeft: "10px" }}
+                            />
+                              <label for="withoutTax">Without Tax</label>
+                            <select
+                              id="inputState"
+                              class="form-control"
+                              onChange={(e) => setWithTax(e.target.value)}
+                            >
+                              <option>Select...</option>
+                              {record.taxData?.map((item) => (
+                                <option key={item.id} value={item.id}>
+                                  {item.taxpercentage}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="form-group col-md-4 mb-3">
+                        <label>Grand Total</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          value={grandTotal}
+                          // defaultValue={newdata?.newdata?.grandTotal}
+                          required
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        onClick={newdata?.newdata ? handleEdit : handleSubmit}
+                        className="btn btn-success btn-sm "
+                      >
+                        {newdata?.newdata ? "Edit" : "Add"}
+                      </button>
+
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={handlePostClose}
+                        variant="secondary"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            {/* Page-body end */}
           </div>
-
-          <div className="form-group col-md-4 mb-3">
-            <label>Grand Total</label>
-            <input
-              type="text"
-              className="form-control"
-              // value={grandTotal}
-              defaultValue={newdata?.newdata?.grandTotal}
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            className="btn btn-success btn-sm "
-          >
-            {newdata ? "Edit" : "Add"}
-          </button>
-
-          <button
-            className="btn btn-danger btn-sm"
-            onClick={handlePostClose}
-            variant="secondary"
-          >
-            Close
-          </button>
         </div>
+        {/* Main-body end */}
+        {/* <div id="styleSelector" /> */}
       </div>
-    </>
+    </div>
   );
 }
 
