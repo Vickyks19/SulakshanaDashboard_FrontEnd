@@ -7032,7 +7032,7 @@ table tbody .border-bottom-info td {
   display: flex;
   align-items: center;
   float: left;
-  height: 80px;
+  height: 60px;
   text-align: center;
   text-transform: uppercase;
   width: 270px;
@@ -7071,7 +7071,7 @@ table tbody .border-bottom-info td {
 .header-navbar .navbar-wrapper .navbar-container .nav-left li,
 .header-navbar .navbar-wrapper .navbar-container .nav-right li {
   float: left;
-  line-height: 5;
+  line-height: 3;
   padding: 0 10px;
   position: relative;
 }
@@ -8420,7 +8420,7 @@ table tbody .border-bottom-info td {
 
 .pcoded[theme-layout="vertical"] .pcoded-navbar .pcoded-item > li > a {
   text-align: left;
-  padding: 10px 20px;
+  padding: 10px 20px 5px;
 }
 .pcoded[theme-layout="vertical"]
   .pcoded-navbar
@@ -10525,7 +10525,7 @@ table tbody .border-bottom-info td {
   font-weight: 700 !important;
   letter-spacing: 1px;
   opacity: 1;
-  padding: 20px 20px 10px;
+  padding: 10px 20px 10px;
   text-transform: capitalize;
   visibility: visible;
   width: 100%;
@@ -12658,7 +12658,7 @@ body[themebg-pattern="pattern9"] {
   position: static;
 }
 .pcoded .pcoded-header[header-theme="theme1"] {
-  background: #fff;
+  /* background: #fff; */
 }
 .pcoded .pcoded-header[header-theme="theme1"] a {
   color: #303548;

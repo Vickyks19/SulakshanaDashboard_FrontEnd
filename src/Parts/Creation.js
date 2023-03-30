@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { MdFilterFrames } from 'react-icons/md';
-import { SiGlassdoor } from 'react-icons/si';
-import { HiOutlineReceiptTax } from 'react-icons/hi';
+
 // import DatePicker from "react-date-picker";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 import './Frame.css';
+import { Button, IconButton } from '@material-ui/core';
 
 function Creation() {
   const [creation, setCreation] = useState([]);
@@ -181,7 +180,7 @@ function Creation() {
 
   return (
     <div className='pcoded-content'>
-      <h5>Creation</h5>
+      <h5>CUSTOMER</h5>
       <div className='pcoded-inner-content'>
         {/* Main-body start */}
         <div className='main-body'>
@@ -192,37 +191,36 @@ function Creation() {
               {/* Basic table card start */}
               <div className='card'>
                 <div className='card-header'>
-                  <h5>Craetion</h5>
-                  <button
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      handlePostShow();
-                    }}
+                  <Button
+                    onClick={handlePostShow}
+                    variant='contained'
+                    color='primary'
+                    size='small'
                   >
-                    Add
-                  </button>
-                  <button
+                    Add Customer
+                  </Button>
+                  {/* <button
                     className='btn btn-primary btn-sm'
                     onClick={handleDelete}
                     style={{ marginLeft: '80%' }}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </div>
                 <div className='card-block table-border-style'>
                   <div className='table-responsive'>
                     <table className='table'>
                       <thead>
                         <tr>
-                          <th>Sl NO</th>
+                          <th>S. No.</th>
                           <th>Name</th>
-                          <th>Phonenumber</th>
+                          <th>Mobile</th>
                           <th>Address</th>
                           <th>Billing Address</th>
                           <th>DOB</th>
-                          <th>EmailID</th>
+                          <th>Email</th>
                           <th>Gender</th>
-                          <th>Action</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -230,12 +228,12 @@ function Creation() {
                           return (
                             <tr key={item._id}>
                               <td>
-                                <span>
+                                <span style={{ paddingRight: '10px' }}>
                                   <input type='checkbox' />
                                 </span>
                                 {index + 1}
                               </td>
-                              <td>
+                              <td style={{ textTransform: 'capitalize' }}>
                                 {item.firstname +
                                   '' +
                                   item.middlename +
@@ -249,9 +247,8 @@ function Creation() {
                               <td>{item.emailid}</td>
                               <td>{item.gender}</td>
                               <td style={{ minWidth: 190 }}>
-                                <button
-                                  size='sm'
-                                  varient='primary'
+                                <IconButton
+                                  size='small'
                                   onClick={() => {
                                     handleEditShow(
                                       setRowData(item),
@@ -271,12 +268,16 @@ function Creation() {
                                       setId(item._id)
                                     );
                                   }}
+                                  style={{ margin: '0 5px' }}
                                 >
-                                  Edit
-                                </button>
-                                <button
-                                  size='sm'
-                                  varient='primary'
+                                  <EditIcon
+                                    style={{ color: '#3b6ba5' }}
+                                    fontSize='small'
+                                  />
+                                </IconButton>
+
+                                <IconButton
+                                  size='small'
                                   onClick={() => {
                                     handleDeleteShow(
                                       setRowData(item),
@@ -284,8 +285,11 @@ function Creation() {
                                     );
                                   }}
                                 >
-                                  Delete
-                                </button>
+                                  <DeleteIcon
+                                    style={{ color: '#f03939' }}
+                                    fontSize='small'
+                                  />
+                                </IconButton>
                               </td>
                             </tr>
                           );

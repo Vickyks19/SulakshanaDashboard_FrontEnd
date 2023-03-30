@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { MdFilterFrames } from 'react-icons/md';
-import { SiGlassdoor } from 'react-icons/si';
-import { HiOutlineReceiptTax } from 'react-icons/hi';
+import { IconButton, Button } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Painting() {
   const [painting, setPainting] = useState([]);
@@ -128,7 +126,7 @@ function Painting() {
 
   return (
     <div className='pcoded-content'>
-      <h5>Painting</h5>
+      <h5>PAINTING</h5>
       <div className='pcoded-inner-content'>
         {/* Main-body start */}
         <div className='main-body'>
@@ -138,29 +136,28 @@ function Painting() {
               {/* Basic table card start */}
               <div className='card'>
                 <div className='card-header'>
-                  <h5>Painting</h5>
-                  <button
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      handlePostShow();
-                    }}
+                  <Button
+                    onClick={handlePostShow}
+                    variant='contained'
+                    color='primary'
+                    size='small'
                   >
-                    Add
-                  </button>
+                    Add Painting
+                  </Button>
                 </div>
                 <div className='card-block table-border-style'>
                   <div className='table-responsive'>
                     <table className='table'>
                       <thead>
                         <tr>
-                          <th>Sl NO</th>
+                          <th>S. No.</th>
                           <th>Painting Name</th>
                           <th>Artist Name</th>
                           <th>Purchase Rate</th>
                           <th>Selling Rate</th>
                           <th>Tax</th>
                           <th>Total Amount</th>
-                          <th>Action</th>
+                          <th>Actions</th>
                         </tr>
                       </thead>
 
@@ -169,7 +166,7 @@ function Painting() {
                           return (
                             <tr key={item._id}>
                               <td>
-                                <span>
+                                <span style={{ paddingRight: 10 }}>
                                   <input type='checkbox' />
                                 </span>
                                 {index + 1}
@@ -181,9 +178,8 @@ function Painting() {
                               <td>{item.tax}</td>
                               <td>{item.sellingRate}</td>
                               <td style={{ minWidth: 190 }}>
-                                <button
-                                  size='sm'
-                                  varient='primary'
+                                <IconButton
+                                  size='small'
                                   onClick={() => {
                                     handleEditShow(
                                       setRowData(item),
@@ -198,12 +194,16 @@ function Painting() {
                                       setId(item._id)
                                     );
                                   }}
+                                  style={{ margin: '0 5px' }}
                                 >
-                                  Edit
-                                </button>
-                                <button
-                                  size='sm'
-                                  varient='primary'
+                                  <EditIcon
+                                    style={{ color: '#3b6ba5' }}
+                                    fontSize='small'
+                                  />
+                                </IconButton>
+
+                                <IconButton
+                                  size='small'
                                   onClick={() => {
                                     handleDeleteShow(
                                       setRowData(item),
@@ -211,8 +211,11 @@ function Painting() {
                                     );
                                   }}
                                 >
-                                  Delete
-                                </button>
+                                  <DeleteIcon
+                                    style={{ color: '#f03939' }}
+                                    fontSize='small'
+                                  />
+                                </IconButton>
                               </td>
                             </tr>
                           );

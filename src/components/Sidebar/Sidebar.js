@@ -19,9 +19,9 @@ function Sidebar() {
           className='pcoded-mtext'
           data-i18n='nav.dash.main'
           href='/dashboard'
-          style={{ cursor: 'pointer', paddingLeft: '30px' }}
+          style={{ cursor: 'pointer', paddingLeft: '20px', paddingTop:'15px', fontWeight:700, fontSize:"14px" }}
         >
-          <Link to='/dashboard'>Dashboard</Link>
+          <Link to='/dashboard'>DASHBOARD</Link>
         </div>
         <div
           className='pcoded-navigatio-lavel '

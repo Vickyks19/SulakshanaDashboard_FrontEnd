@@ -1,9 +1,7 @@
 import React from 'react';
-import Home from './pages/Home/Home';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './pages/Login/Login';
 // import Main from "./Parts/Main";
-import Sidee from './components/Side/Sidee';
 import Mount from './Parts/Mount';
 import Glass from './Parts/Glass';
 import Hardboard from './Parts/Hardboard';
@@ -19,9 +17,6 @@ import QuotationView from './Parts/QuotationView';
 import Invoice from './Parts/Invoice';
 import Painting from './Parts/Painting';
 import { createTheme, ThemeProvider } from '@material-ui/core';
-import { MdFilterFrames } from 'react-icons/md';
-import { SiGlassdoor } from 'react-icons/si';
-import { HiOutlineReceiptTax } from 'react-icons/hi';
 import Navbar from './components/Navbar/Navbar';
 import Sidebar from './components/Sidebar/Sidebar';
 
@@ -38,6 +33,9 @@ function App() {
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <div className='App'>
+          <Routes>
+            <Route path='/' element={<Login />} />
+          </Routes>
           <div id='pcoded' className='pcoded'>
             <div className='pcoded-overlay-box' />
             <div className='pcoded-container navbar-wrapper'>
@@ -46,7 +44,6 @@ function App() {
                 <div className='pcoded-wrapper'>
                   <Sidebar />
                   <Routes>
-                    <Route path='/' element={<Login />} />
                     {/* <Route path="/sidee" element={<Sidee />} /> */}
                     <Route path='/dashboard' element={<Dashboard />} />
                     {/* <Route path="/frame" element={<Main />} /> */}

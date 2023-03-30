@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Modal from 'react-bootstrap/Modal';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { IconButton, Button } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Glass() {
   const [glass, setGlass] = useState([]);
@@ -105,7 +106,7 @@ function Glass() {
 
   return (
     <div className='pcoded-content'>
-      <h5>Glass</h5>
+      <h5>GLASS</h5>
       <div className='pcoded-inner-content'>
         {/* Main-body start */}
         <div className='main-body'>
@@ -115,14 +116,15 @@ function Glass() {
               <div className='card'>
                 <div className='card-header'>
                   {/* <h5>Glass</h5> */}
-                  <button
-                    className='btn btn-primary btn-sm'
-                    onClick={() => {
-                      handlePostShow();
-                    }}
+                  <Button
+                    onClick={handlePostShow}
+                    variant='contained'
+                    color='primary'
+                    size='small'
                   >
-                    Add
-                  </button>
+                    Add Glass
+                  </Button>
+
                   {/* 
                             <div className="card-header-right">
                               <ul className="list-unstyled card-option">
@@ -147,7 +149,7 @@ function Glass() {
                     <table className='table'>
                       <thead>
                         <tr>
-                          <th>Sl NO</th>
+                          <th>S. No.</th>
                           <th>Name</th>
                           <th>Width</th>
                           <th>Height</th>
@@ -160,7 +162,7 @@ function Glass() {
                           return (
                             <tr key={item._id}>
                               <td>
-                                <span>
+                                <span style={{ paddingRight: 10 }}>
                                   <input type='checkbox' />
                                 </span>
                                 {index + 1}
@@ -170,9 +172,8 @@ function Glass() {
                               <td>{item.height}</td>
                               <td>{item.rate}</td>
                               <td style={{ minWidth: 190 }}>
-                                <button
-                                  size='sm'
-                                  varient='primary'
+                                <IconButton
+                                  size='small'
                                   onClick={() => {
                                     handleEditShow(
                                       setRowData(item),
@@ -183,12 +184,16 @@ function Glass() {
                                       setId(item._id)
                                     );
                                   }}
+                                  style={{ margin: '0 5px' }}
                                 >
-                                  Edit
-                                </button>
-                                <button
-                                  size='sm'
-                                  varient='primary'
+                                  <EditIcon
+                                    style={{ color: '#3b6ba5' }}
+                                    fontSize='small'
+                                  />
+                                </IconButton>
+
+                                <IconButton
+                                  size='small'
                                   onClick={() => {
                                     handleDeleteShow(
                                       setRowData(item),
@@ -196,8 +201,11 @@ function Glass() {
                                     );
                                   }}
                                 >
-                                  Delete
-                                </button>
+                                  <DeleteIcon
+                                    style={{ color: '#f03939' }}
+                                    fontSize='small'
+                                  />
+                                </IconButton>
                               </td>
                             </tr>
                           );

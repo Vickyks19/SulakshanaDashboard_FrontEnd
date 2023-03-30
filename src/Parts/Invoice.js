@@ -1,25 +1,14 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
-import { Button } from 'react-bootstrap';
-import { Link, Navigate } from 'react-router-dom';
-import { MdFilterFrames } from 'react-icons/md';
-import { SiGlassdoor } from 'react-icons/si';
-import { HiOutlineReceiptTax } from 'react-icons/hi';
 
 import InvoiceView from './Invoice/InvoiceView';
+import { IconButton, Button } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import { useNavigate } from 'react-router-dom';
 // import DatePicker from "react-date-picker";
 
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  PDFViewer,
-} from '@react-pdf/renderer';
+import { PDFViewer } from '@react-pdf/renderer';
 
 import './Frame.css';
 
@@ -82,7 +71,7 @@ function Invoice() {
   return (
     <div>
       <div className='pcoded-content'>
-        <h5>Invoice</h5>
+        <h5>INVOICE</h5>
         <div className='pcoded-inner-content'>
           {/* Main-body start */}
           <div className='main-body'>
@@ -93,14 +82,15 @@ function Invoice() {
                 {/* Basic table card start */}
                 <div className='card'>
                   <div className='card-header'>
-                    <h5>Invoice</h5>
                     <a href='/quote'>
-                      <button
-                        className='btn btn-primary btn-sm'
+                      <Button
                         onClick={handlePostShow}
+                        variant='contained'
+                        color='primary'
+                        size='small'
                       >
-                        Add
-                      </button>
+                        Add Invoice
+                      </Button>
                     </a>
                   </div>
                   <div className='card-block table-border-style'>
@@ -108,7 +98,7 @@ function Invoice() {
                       <table className='table'>
                         <thead>
                           <tr>
-                            <th>Quotation NO</th>
+                            <th>Quotation No</th>
                             <th>Customer Name</th>
                             {/* <th>Phonenumber</th> */}
                             {/* <th>Address</th> */}
@@ -116,7 +106,7 @@ function Invoice() {
                             <th>Grand Total</th>
                             {/* <th>EmailID</th> */}
                             {/* <th>Gender</th> */}
-                            <th>Action</th>
+                            <th>Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -124,7 +114,7 @@ function Invoice() {
                             return (
                               <tr key={item._id}>
                                 <td>
-                                  <span>
+                                  <span style={{ paddingRight: 10 }}>
                                     <input type='checkbox' />
                                   </span>
                                   {item.quotationNo}
@@ -133,27 +123,21 @@ function Invoice() {
                                 <td>{item.billingaddress}</td>
                                 <td>{item.grandTotal}</td>
                                 <td style={{ minWidth: 190 }}>
-                                  <button
-                                    size='sm'
-                                    varient='primary'
-                                    value='Click to Open QuatationView'
+                                  <Button
+                                    size='small'
+                                    variant='outlined'
                                     onClick={(e) => {
                                       handleView(item._id, togglePopup());
-                                      // setRowData(item),
-                                      // setId(item._id)
-
-                                      // setRowData(item),
-
-                                      // item._id
-                                      console.log(437, item._id);
                                     }}
                                   >
                                     View
-                                  </button>
+                                  </Button>
 
-                                  <button
-                                    size='sm'
-                                    varient='primary'
+                                  <Button
+                                    size='small'
+                                    variant='contained'
+                                    color='primary'
+                                    style={{ margin: '0 5px' }}
                                     onClick={() => {
                                       handleEditShow(
                                         // setRowData(item),
@@ -164,10 +148,10 @@ function Invoice() {
                                     }}
                                   >
                                     Generate
-                                  </button>
-                                  <button
-                                    size='sm'
-                                    varient='primary'
+                                  </Button>
+
+                                  <IconButton
+                                    size='small'
                                     onClick={() => {
                                       handleDeleteShow(
                                         setRowData(item),
@@ -175,8 +159,11 @@ function Invoice() {
                                       );
                                     }}
                                   >
-                                    Delete
-                                  </button>
+                                    <DeleteIcon
+                                      style={{ color: '#f03939' }}
+                                      fontSize='small'
+                                    />
+                                  </IconButton>
                                 </td>
                               </tr>
                             );
