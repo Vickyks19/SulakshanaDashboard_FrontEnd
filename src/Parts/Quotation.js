@@ -39,8 +39,7 @@ function Quotation() {
 
   const [size, setSize] = useState({});
   const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(newdata?.newdata?.total || 0);
-  console.log(43, total, newdata?.newdata?.total);
+  const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [grandTotal, setgrandToatal] = useState(
     newdata?.newdata?.grandTotal || 0
@@ -94,20 +93,9 @@ function Quotation() {
       });
   };
 
-  const handleEdit = (e, id) => {
-    console.log(
-      95,
-      e,
-      date,
-      customername,
-      billingaddress,
-      items,
-      total,
-      grandTotal
-    );
-    e.preventDefault();
+  const handleEdit = () => {
     axios
-      .put(`http://localhost:4000/quotationData/${id}`, {
+      .put(`http://localhost:4000/quotationData/${newdata?.newdata?._id}`, {
         quotationNo: quotationNo,
         date: date,
         customername: customername,
@@ -116,15 +104,19 @@ function Quotation() {
         total: total,
         grandTotal: grandTotal,
       })
-
       .then((data) => {
         console.log(1, data);
-        const index = quotation.findIndex((e) => e._id === id);
-        console.log(12, index);
+
+        const index = quotation.findIndex((item) => {
+          return item._id === id;
+        });
+
+        console.log(2, index);
         const newFrames = quotation;
         newFrames.splice(index, 1, data.data.data);
-        console.log(118, newFrames);
+        console.log(3, newFrames);
         setQuotation(newFrames);
+        navigate("/quotation");
       })
       .catch((err) => {
         console.log(err);
@@ -217,19 +209,19 @@ function Quotation() {
 
   useEffect(() => {
     const value =
-      price.frame +
-      price.mount +
-      price.glass +
-      price.hardboard +
-      price.sellingRate;
+      price?.frame +
+      price?.mount +
+      price?.glass +
+      price?.hardboard +
+      price?.sellingRate;
 
     setTotal(value);
-    console.log(value);
 
     const newItems = items.map((item) => {
       if (item?.Name !== "painting") {
         return { ...item, price: price[item.name] };
       }
+
       return item;
     });
     setItems(newItems);
@@ -248,33 +240,20 @@ function Quotation() {
     setgrandToatal(grandTotal);
   };
 
-  const sizeEdit = () => {
-    if (newdata?.newdata) {
-      if (newdata) {
-        let newsize = {};
+  const formEdit = () => {
+    if (newdata) {
+      let newsize = {};
 
-        newdata?.newdata?.items?.map((item) => {
-          if (item?.Name !== "painting") {
-            newsize[`${item.name}Size`] = item.size;
-            return { [`${item.name}Size`]: item.size };
-          }
-        });
+      newdata?.newdata?.items?.map((item) => {
+        if (item?.Name !== "painting") {
+          newsize[`${item.name}Size`] = item.size;
+          return { [`${item.name}Size`]: item.size };
+        }
+      });
 
-        setSize(newsize);
-      }
+      setSize(newsize);
     }
-  };
 
-  const Qty = (entity) => {
-    const newQty = newdata?.newdata?.items?.find((item) => {
-      if (item.name === entity) {
-        return item.qty;
-      }
-    });
-    return newQty?.qty;
-  };
-
-  const Price = () => {
     if (newdata?.newdata) {
       let priceNew = {};
 
@@ -287,11 +266,9 @@ function Quotation() {
         }
       });
 
-      setPrice(priceNew);
+      setPrice({ ...price, ...priceNew });
     }
-  };
 
-  const PaintingEdit = () => {
     if (newdata?.newdata) {
       const paintEdit = newdata?.newdata?.items?.find((item) => {
         if (item.Name === "painting") {
@@ -302,6 +279,60 @@ function Quotation() {
     }
   };
 
+  // const sizeEdit = () => {
+  //   if (newdata?.newdata) {
+  //     if (newdata) {
+  //       let newsize = {};
+
+  //       newdata?.newdata?.items?.map((item) => {
+  //         if (item?.Name !== "painting") {
+  //           newsize[`${item.name}Size`] = item.size;
+  //           return { [`${item.name}Size`]: item.size };
+  //         }
+  //       });
+
+  //       setSize(newsize);
+  //     }
+  //   }
+  // };
+
+  const Qty = (entity) => {
+    const newQty = newdata?.newdata?.items?.find((item) => {
+      if (item.name === entity) {
+        return item.qty;
+      }
+    });
+    return newQty?.qty;
+  };
+
+  // const Price = () => {
+  //   if (newdata?.newdata) {
+  //     let priceNew = {};
+
+  //     newdata?.newdata?.items?.map((item) => {
+  //       if (item?.Name !== "painting") {
+  //         priceNew[`${item.name}`] = item.price;
+  //         return { [`${item.name}`]: item.price };
+  //       } else {
+  //         priceNew.sellingRate = item.price;
+  //       }
+  //     });
+
+  //     setPrice(priceNew);
+  //   }
+  // };
+
+  // const PaintingEdit = () => {
+  //   if (newdata?.newdata) {
+  //     const paintEdit = newdata?.newdata?.items?.find((item) => {
+  //       if (item.Name === "painting") {
+  //         return item?.name;
+  //       }
+  //     });
+  //     return setPaintingName(paintEdit?.name);
+  //   }
+  // };
+
   // useEffect(() => {
   //   if (newdata?.newdata) {
   //     Number(newdata?.newdata?.total);
@@ -311,10 +342,11 @@ function Quotation() {
   // }, []);
 
   useEffect(() => {
-    sizeEdit();
+    formEdit();
+    // sizeEdit();
     Qty();
-    Price();
-    PaintingEdit();
+    // Price();
+    // PaintingEdit();
   }, []);
 
   useEffect(() => {
@@ -664,6 +696,7 @@ function Quotation() {
                           type="text"
                           className="form-control"
                           value={total}
+                          // defaultValue={newdata?.newdata?.total}
                           placeholder=""
                           required
                         />

@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
-import { IconButton, Button } from '@material-ui/core';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import { IconButton, Button } from "@material-ui/core";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 function Painting() {
   const [painting, setPainting] = useState([]);
-  const [rowData, setRowData] = useState('');
+  const [rowData, setRowData] = useState("");
 
   const [viewPost, setPostShow] = useState(false);
   const handlePostShow = () => setPostShow(true);
@@ -17,25 +17,25 @@ function Painting() {
   const handleEditShow = () => setEditShow(true);
   const handleEditClose = () => setEditShow(false);
 
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
 
   const [viewDelete, setDeleteShow] = useState(false);
   const handleDeleteShow = () => setDeleteShow(true);
   const handleDeleteClose = () => setDeleteShow(false);
 
-  const [paintingName, setPaintingName] = useState('');
-  const [artistName, setArtistName] = useState('');
-  const [purchaseRate, setPurchaseRate] = useState('');
-  const [sellingRate, setSellingRate] = useState('');
-  const [tax, setTax] = useState('');
+  const [paintingName, setPaintingName] = useState("");
+  const [artistName, setArtistName] = useState("");
+  const [purchaseRate, setPurchaseRate] = useState("");
+  const [sellingRate, setSellingRate] = useState("");
+  const [tax, setTax] = useState("");
   //   const [totalAmount, setTotalAmount] = useState("");
 
   const PaintingData = () => {
     axios
-      .get('http://localhost:4000/paintingData')
+      .get("http://localhost:4000/paintingData")
 
       .then((data) => {
-        console.log(40, data);
+        // console.log(40, data);
         setPainting(data.data.data);
       })
       .catch((err) => {
@@ -46,7 +46,7 @@ function Painting() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:4000/painting', {
+      .post("http://localhost:4000/painting", {
         paintingName,
         artistName,
         purchaseRate,
@@ -57,11 +57,11 @@ function Painting() {
       .then((data) => {
         setPainting([data.data.data, ...painting]);
         setPostShow(false);
-        setPaintingName('');
-        setArtistName('');
-        setPurchaseRate('');
-        setSellingRate('');
-        setTax('');
+        setPaintingName("");
+        setArtistName("");
+        setPurchaseRate("");
+        setSellingRate("");
+        setTax("");
         // setTotalAmount("");
       })
       .catch((err) => {
@@ -73,7 +73,7 @@ function Painting() {
     console.log(e);
     e.preventDefault();
     const Store = [
-      setPaintingName(''),
+      setPaintingName(""),
       setArtistName,
       setPurchaseRate,
       setSellingRate,
@@ -89,11 +89,14 @@ function Painting() {
         purchaseRate: purchaseRate,
         sellingRate: sellingRate,
         tax: tax,
-        // totalAmount: totalAmount,
       })
 
       .then((data) => {
-        const index = painting.findIndex((e) => e._id === id);
+        console.log(96, data);
+        const index = painting.findIndex((e) => {
+          console.log(97, e.id, id);
+          return e._id === id;
+        });
         console.log(12, index);
         const newFrames = painting;
         newFrames.splice(index, 1, data.data.data);
@@ -125,29 +128,29 @@ function Painting() {
   }, []);
 
   return (
-    <div className='pcoded-content'>
+    <div className="pcoded-content">
       <h5>PAINTING</h5>
-      <div className='pcoded-inner-content'>
+      <div className="pcoded-inner-content">
         {/* Main-body start */}
-        <div className='main-body'>
-          <div className='page-wrapper'>
+        <div className="main-body">
+          <div className="page-wrapper">
             {/* Page-body start */}
-            <div className='page-body'>
+            <div className="page-body">
               {/* Basic table card start */}
-              <div className='card'>
-                <div className='card-header'>
+              <div className="card">
+                <div className="card-header">
                   <Button
                     onClick={handlePostShow}
-                    variant='contained'
-                    color='primary'
-                    size='small'
+                    variant="contained"
+                    color="primary"
+                    size="small"
                   >
                     Add Painting
                   </Button>
                 </div>
-                <div className='card-block table-border-style'>
-                  <div className='table-responsive'>
-                    <table className='table'>
+                <div className="card-block table-border-style">
+                  <div className="table-responsive">
+                    <table className="table">
                       <thead>
                         <tr>
                           <th>S. No.</th>
@@ -167,7 +170,7 @@ function Painting() {
                             <tr key={item._id}>
                               <td>
                                 <span style={{ paddingRight: 10 }}>
-                                  <input type='checkbox' />
+                                  <input type="checkbox" />
                                 </span>
                                 {index + 1}
                               </td>
@@ -179,7 +182,7 @@ function Painting() {
                               <td>{item.sellingRate}</td>
                               <td style={{ minWidth: 190 }}>
                                 <IconButton
-                                  size='small'
+                                  size="small"
                                   onClick={() => {
                                     handleEditShow(
                                       setRowData(item),
@@ -194,16 +197,16 @@ function Painting() {
                                       setId(item._id)
                                     );
                                   }}
-                                  style={{ margin: '0 5px' }}
+                                  style={{ margin: "0 5px" }}
                                 >
                                   <EditIcon
-                                    style={{ color: '#3b6ba5' }}
-                                    fontSize='small'
+                                    style={{ color: "#3b6ba5" }}
+                                    fontSize="small"
                                   />
                                 </IconButton>
 
                                 <IconButton
-                                  size='small'
+                                  size="small"
                                   onClick={() => {
                                     handleDeleteShow(
                                       setRowData(item),
@@ -212,8 +215,8 @@ function Painting() {
                                   }}
                                 >
                                   <DeleteIcon
-                                    style={{ color: '#f03939' }}
-                                    fontSize='small'
+                                    style={{ color: "#f03939" }}
+                                    fontSize="small"
                                   />
                                 </IconButton>
                               </td>
@@ -225,11 +228,11 @@ function Painting() {
                   </div>
 
                   {/* Add */}
-                  <div className='model-box-view'>
+                  <div className="model-box-view">
                     <Modal
                       show={viewPost}
                       onHide={handleSubmit}
-                      backdrop='static'
+                      backdrop="static"
                       keyboard={false}
                     >
                       <Modal.Header>
@@ -237,53 +240,53 @@ function Painting() {
                       </Modal.Header>
                       <Modal.Body>
                         <div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>PaintingName</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setPaintingName(e.target.value)}
-                              placeholder='Please enter Name'
+                              placeholder="Please enter Name"
                               required
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>ArtistName</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setArtistName(e.target.value)}
-                              placeholder='Please enter width'
+                              placeholder="Please enter width"
                               required
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>PurchaseRate</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setPurchaseRate(e.target.value)}
-                              placeholder='Please enter Height'
+                              placeholder="Please enter Height"
                               required
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>SellingRate</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setSellingRate(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                               required
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Tax</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setTax(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                               required
                             />
                           </div>
@@ -300,19 +303,19 @@ function Painting() {
                                       />
                                     </div> */}
                           <button
-                            type='submit'
-                            className='btn btn-success btn-sm '
+                            type="submit"
+                            className="btn btn-success btn-sm "
                             onClick={handleSubmit}
-                            data-dismiss='modal'
+                            data-dismiss="modal"
                           >
                             Add
                           </button>
                           <Button
-                            className='btn btn-danger btn-sm'
-                            variant='secondary'
+                            className="btn btn-danger btn-sm"
+                            variant="secondary"
                             onClick={handlePostClose}
-                            style={{ paddingLeft: '15px' }}
-                            data-dismiss='modal'
+                            style={{ paddingLeft: "15px" }}
+                            data-dismiss="modal"
                           >
                             Close
                           </Button>
@@ -323,92 +326,92 @@ function Painting() {
                   {/* Add End */}
 
                   {/* Edit & Delete */}
-                  <div className='model-box-view'>
+                  <div className="model-box-view">
                     <Modal
                       show={viewEdit ? viewEdit : viewDelete}
                       onHide={
                         handleEditClose ? handleEditClose : handleDeleteClose
                       }
-                      backdrop='static'
+                      backdrop="static"
                       keyboard={false}
                     >
                       <Modal.Header>
                         <Modal.Title>
-                          {viewEdit ? 'Edit' : 'Delete'}
+                          {viewEdit ? "Edit" : "Delete"}
                         </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
                         <div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>PaintingName</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setPaintingName(e.target.value)}
-                              placeholder='Please enter Name'
+                              placeholder="Please enter Name"
                               defaultValue={rowData.paintingName}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>ArtistName</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setArtistName(e.target.value)}
-                              placeholder='Please enter width'
+                              placeholder="Please enter width"
                               defaultValue={rowData.artistName}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>PurchaseRate</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setPurchaseRate(e.target.value)}
-                              placeholder='Please enter Height'
+                              placeholder="Please enter Height"
                               defaultValue={rowData.purchaseRate}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>SellingRate</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setSellingRate(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                               defaultValue={rowData.sellingRate}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Tax</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setTax(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                               defaultValue={rowData.tax}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>TotalAmount</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setSellingRate(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                               defaultValue={rowData.sellingRate}
                             />
                           </div>
                           <button
-                            type='submit'
-                            className='btn btn-success btn-sm'
+                            type="submit"
+                            className="btn btn-success btn-sm"
                             onClick={viewEdit ? handleEdit : handleDelete}
                           >
-                            {viewEdit ? 'Update' : 'Delete'}
+                            {viewEdit ? "Update" : "Delete"}
                           </button>
                           <button
-                            variant='secondary'
-                            className='btn btn-danger btn-sm'
+                            variant="secondary"
+                            className="btn btn-danger btn-sm"
                             onClick={
                               viewEdit ? handleEditClose : handleDeleteClose
                             }
@@ -427,7 +430,7 @@ function Painting() {
           </div>
         </div>
         {/* Main-body end */}
-        <div id='styleSelector' />
+        <div id="styleSelector" />
       </div>
     </div>
   );

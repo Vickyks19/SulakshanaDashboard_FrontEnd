@@ -1,22 +1,22 @@
-import './Frame.css';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, IconButton, Modal } from '@material-ui/core';
+import "./Frame.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Button, IconButton, Modal } from "@material-ui/core";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
-import QuotationView from './QuotationView';
-import './QuotationCreation.css';
+import QuotationView from "./QuotationView";
+import "./QuotationCreation.css";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-import './Frame.css';
+import "./Frame.css";
 
 function QuotationCreation() {
   const [quotation, setQuotation] = useState([]);
 
-  const [rowData, setRowData] = useState('');
+  const [rowData, setRowData] = useState("");
 
   const [filterNew, setFilterNew] = useState({});
   console.log(33, filterNew);
@@ -38,7 +38,7 @@ function QuotationCreation() {
 
   const [view, setViewShow] = useState(false);
 
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
 
   const [price, setPrice] = useState({
     // frame: 0,
@@ -72,20 +72,18 @@ function QuotationCreation() {
   };
 
   const captureEdit = (id) => {
+    console.log(75, id);
     let filtered = quotation.find((item) => item._id === id);
     setNewData(filtered);
-    console.log(82, filtered, newdata);
-    navigate('/quote', { state: { newdata: filtered } });
+    navigate("/quote", { state: { newdata: filtered } });
   };
 
-  const handleDelete = (e) => {
-    // e.preventDefault();
+  const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:4000/quotationData/:_id`)
-      .then((data) => {
-        const newFrames = quotation.filter((e) => e._id !== id);
-        setQuotation(newFrames);
-        console.log(106, newFrames);
+      .delete(`http://localhost:4000/quotationData/${id}`)
+      .then((res) => {
+        const newQuote = quotation.filter((e) => e._id !== id);
+        setQuotation(newQuote);
       })
       .catch((err) => {
         console.log(err);
@@ -97,33 +95,33 @@ function QuotationCreation() {
   }, []);
 
   return (
-    <div className='pcoded-content'>
+    <div className="pcoded-content">
       <h5>QUOTATION</h5>
-      <div className='pcoded-inner-content'>
+      <div className="pcoded-inner-content">
         {/* Main-body start */}
-        <div className='main-body'>
-          <div className='page-wrapper'>
+        <div className="main-body">
+          <div className="page-wrapper">
             {/* Page-body start */}
 
-            <div className='page-body'>
+            <div className="page-body">
               {/* Basic table card start */}
-              <div className='card'>
-                <div className='card-header'>
+              <div className="card">
+                <div className="card-header">
                   {/* <h5>Quotation</h5> */}
-                  <a href='/quote'>
+                  <a href="/quote">
                     <Button
                       onClick={handlePostShow}
-                      variant='contained'
-                      color='primary'
-                      size='small'
+                      variant="contained"
+                      color="primary"
+                      size="small"
                     >
                       Add Quotation
                     </Button>
                   </a>
                 </div>
-                <div className='card-block table-border-style'>
-                  <div className='table-responsive'>
-                    <table className='table'>
+                <div className="card-block table-border-style">
+                  <div className="table-responsive">
+                    <table className="table">
                       <thead>
                         <tr>
                           <th>Quotation No.</th>
@@ -141,7 +139,7 @@ function QuotationCreation() {
                             <tr key={item._id}>
                               <td>
                                 <span style={{ marginRight: 10 }}>
-                                  <input type='checkbox' />
+                                  <input type="checkbox" />
                                 </span>
                                 {item.quotationNo}
                               </td>
@@ -150,8 +148,8 @@ function QuotationCreation() {
                               <td>{item.grandTotal}</td>
                               <td style={{ minWidth: 190 }}>
                                 <Button
-                                  size='small'
-                                  variant='outlined'
+                                  size="small"
+                                  variant="outlined"
                                   onClick={(e) => {
                                     handleView(item._id, togglePopup());
                                   }}
@@ -160,27 +158,28 @@ function QuotationCreation() {
                                 </Button>
 
                                 <IconButton
-                                  size='small'
+                                  size="small"
                                   onClick={(e) => {
-                                    captureEdit(item._id, setId(item._id));
+                                    captureEdit(item._id, setId(item._id), e);
+                                    console.log(163, item._id);
                                   }}
-                                  style={{ margin: '0 5px' }}
+                                  style={{ margin: "0 5px" }}
                                 >
                                   <EditIcon
-                                    style={{ color: '#3b6ba5' }}
-                                    fontSize='small'
+                                    style={{ color: "#3b6ba5" }}
+                                    fontSize="small"
                                   />
                                 </IconButton>
 
                                 <IconButton
-                                  size='small'
+                                  size="small"
                                   onClick={(e) => {
-                                    handleDelete(e);
+                                    handleDelete(item._id);
                                   }}
                                 >
                                   <DeleteIcon
-                                    style={{ color: '#f03939' }}
-                                    fontSize='small'
+                                    style={{ color: "#f03939" }}
+                                    fontSize="small"
                                   />
                                 </IconButton>
                               </td>
