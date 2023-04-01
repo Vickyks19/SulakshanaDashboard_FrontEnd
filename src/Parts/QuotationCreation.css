@@ -19,3 +19,8 @@
 .a {
   color: 'white' !important;
 }
+
+.modal-90w {
+  max-width: none !important;
+  width: 80% !important;
+}

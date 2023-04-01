@@ -56,7 +56,7 @@ function App() {
                     {/* <Route path="/creation-1" element={<Create />} />
                      */}
                     <Route path='/quotation' element={<QuotationCreation />} />
-                    <Route path='/quote' element={<Quotation />} />
+                    {/* <Route path='/quote' element={<Quotation />} /> */}
                     <Route path='/quotationView' element={<QuotationView />} />
                     <Route path='/invoice' element={<Invoice />} />
                     <Route path='/painting' element={<Painting />} />
