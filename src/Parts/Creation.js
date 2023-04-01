@@ -303,40 +303,41 @@ function Creation() {
                       onHide={handleSubmit}
                       backdrop='static'
                       keyboard={false}
+                      size='lg'
                     >
                       <Modal.Header>
-                        <Modal.Title>Creation</Modal.Title>
+                        <Modal.Title>Add Customer</Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
                         <div>
                           <div className='form-row'>
                             <div className='col-md-4 mb-3'>
-                              <label>FirstName</label>
+                              <label>First Name</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setFirstname(e.target.value)}
-                                placeholder='Please enter FirstName'
+                                placeholder='Please enter First Name'
                                 required
                               />
                             </div>
                             <div className='col-md-4 mb-3'>
-                              <label>MiddleName</label>
+                              <label>Middle Name</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setMiddlename(e.target.value)}
-                                placeholder='Please enter MiddleName'
+                                placeholder='Please enter Middle Name'
                                 required
                               />
                             </div>
                             <div className=' col-md-4 mb-3'>
-                              <label>LastName</label>
+                              <label>Last Name</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setLastname(e.target.value)}
-                                placeholder='Please enter LastName'
+                                placeholder='Please enter Last Name'
                                 required
                               />
                             </div>
@@ -358,68 +359,68 @@ function Creation() {
                                 justifyContent: 'space-between',
                               }}
                             >
-                              <span>
-                                <input
-                                  type='checkbox'
-                                  onChange={(e) => setAddress(e.target.value)}
-                                  required
-                                />
+                              <input
+                                type='checkbox'
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                              />
+                              <span style={{ marginLeft: 10 }}>
+                                Same as Address
                               </span>
-                              <p> Same as Address</p>
                             </label>
                           </div>
 
                           <div className='form-group mt-3'>
-                            <label>BillingAddress</label>
+                            <label>Billing Address</label>
                             <input
                               type='text'
                               className='form-control'
                               onChange={(e) =>
                                 setBillingaddress(e.target.value)
                               }
-                              placeholder='Please enter billingaddress'
+                              placeholder='Please enter billing address'
                               required
                             />
                           </div>
                           <div className='form-row'>
                             <div className='col-md-6 mb-3'>
-                              <label>Phonenumber</label>
+                              <label>Mobile</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setPhonenumber(e.target.value)}
-                                placeholder='Please enter phonenumber'
+                                placeholder='Please enter mobile'
                                 required
                                 maxLength={10}
                               />
                             </div>
                             <div className='col-md-6 mb-3'>
-                              <label>AdditionPhonenumber </label>
+                              <label>Alternate Mobile </label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) =>
                                   setAdditionphonenumber(e.target.value)
                                 }
-                                placeholder='Please enter additionphonenumber'
+                                placeholder='Please enter alternate mobile'
                                 required
                                 maxLength={10}
                               />
                             </div>
                           </div>
                           <div className='form-group mt-3'>
-                            <label>EmailID</label>
+                            <label>Email ID</label>
                             <input
                               type='email'
                               className='form-control'
                               onChange={(e) => setEmailId(e.target.value)}
-                              placeholder='Please enter emailid'
+                              placeholder='Please enter email id'
                               required
                             />
                           </div>
                           <div className='form-row'>
                             <div className='col-md-6 mb-4'>
-                              <label> DOB</label>
+                              <label>DOB</label>
                               <input
                                 // DatePicker
                                 type='date'
@@ -444,26 +445,30 @@ function Creation() {
                               </select>
                             </div>
                           </div>
-
-                          <button
-                            type='submit'
-                            className='btn btn-success btn-sm '
-                            onClick={handleSubmit}
-                            data-dismiss='modal'
-                          >
-                            Add Data
-                          </button>
-                          <button
-                            className='btn btn-danger btn-sm'
-                            variant='secondary'
-                            onClick={handlePostClose}
-                            style={{ paddingLeft: '15px' }}
-                            data-dismiss='modal'
-                          >
-                            Close
-                          </button>
                         </div>
                       </Modal.Body>
+
+                      <Modal.Footer style={{ float: 'right' }}>
+                        <Button
+                          type='submit'
+                          onClick={handleSubmit}
+                          size='small'
+                          variant='contained'
+                          color='primary'
+                          data-dismiss='modal'
+                        >
+                          Add
+                        </Button>
+
+                        <Button
+                          size='small'
+                          variant='outlined'
+                          onClick={handlePostClose}
+                          data-dismiss='modal'
+                        >
+                          Close
+                        </Button>
+                      </Modal.Footer>
                     </Modal>
                   </div>
                   {/* edit */}
@@ -475,10 +480,11 @@ function Creation() {
                       }
                       backdrop='static'
                       keyboard={false}
+                      size='lg'
                     >
                       <Modal.Header>
                         <Modal.Title>
-                          {viewEdit ? 'Edit' : 'Delete'}
+                          {viewEdit ? 'Edit Customer' : 'Delete Customer'}
                         </Modal.Title>
                       </Modal.Header>
 
@@ -486,33 +492,33 @@ function Creation() {
                         <div>
                           <div className='form-row'>
                             <div className='col-md-4 mb-3'>
-                              <label>FirstName</label>
+                              <label>First Name</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setFirstname(e.target.value)}
-                                placeholder='Please enter FirstName'
+                                placeholder='Please enter First Name'
                                 defaultValue={rowData.firstname}
                               />
                             </div>
                             <div className='col-md-4 mb-3'>
-                              <label>MiddleName</label>
+                              <label>Middle Name</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setMiddlename(e.target.value)}
-                                placeholder='Please enter MiddleName'
+                                placeholder='Please enter Middle Name'
                                 defaultValue={rowData.middlename}
                                 required
                               />
                             </div>
                             <div className=' col-md-4 mb-3'>
-                              <label>LastName</label>
+                              <label>Last Name</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setLastname(e.target.value)}
-                                placeholder='Please enter LastName'
+                                placeholder='Please enter Last Name'
                                 defaultValue={rowData.lastname}
                                 required
                               />
@@ -536,70 +542,71 @@ function Creation() {
                                 justifyContent: 'space-between',
                               }}
                             >
-                              <span>
-                                <input
-                                  type='checkbox'
-                                  onChange={(e) => setAddress(e.target.value)}
-                                  required
-                                />
+                              <input
+                                type='checkbox'
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                              />
+                              <span style={{ marginLeft: 5 }}>
+                                {' '}
+                                Same as Address
                               </span>
-                              <p> Same as Address</p>
                             </label>
                           </div>
 
                           <div className='form-group mt-3'>
-                            <label>BillingAddress</label>
+                            <label>Billing Address</label>
                             <input
                               type='text'
                               className='form-control'
                               onChange={(e) =>
                                 setBillingaddress(e.target.value)
                               }
-                              placeholder='Please enter billingaddress'
+                              placeholder='Please enter billing address'
                               defaultValue={rowData.billingaddress}
                               required
                             />
                           </div>
                           <div className='form-row'>
                             <div className='col-md-6 mb-3'>
-                              <label>Phonenumber</label>
+                              <label>Mobile</label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) => setPhonenumber(e.target.value)}
-                                placeholder='Please enter phonenumber'
+                                placeholder='Please enter Mobile'
                                 defaultValue={rowData.phonenumber}
                                 required
                               />
                             </div>
                             <div className='col-md-6 mb-3'>
-                              <label>AdditionPhonenumber </label>
+                              <label>Alternate Mobile </label>
                               <input
                                 type='text'
                                 className='form-control'
                                 onChange={(e) =>
                                   setAdditionphonenumber(e.target.value)
                                 }
-                                placeholder='Please enter additionphonenumber'
+                                placeholder='Please enter alternate mobile'
                                 defaultValue={rowData.additionphonenumber}
                                 required
                               />
                             </div>
                           </div>
                           <div className='form-group mt-3'>
-                            <label>EmailID</label>
+                            <label>Email ID</label>
                             <input
                               type='text'
                               className='form-control'
                               onChange={(e) => setEmailId(e.target.value)}
-                              placeholder='Please enter emailid'
+                              placeholder='Please enter email id'
                               defaultValue={rowData.emailid}
                               required
                             />
                           </div>
                           <div className='form-row'>
                             <div className='col-md-6 mb-4'>
-                              <label> DOB</label>
+                              <label>DOB</label>
                               <input
                                 type='date'
                                 className='form-control'
@@ -625,26 +632,29 @@ function Creation() {
                               </select>
                             </div>
                           </div>
-
-                          <button
-                            type='submit'
-                            className='btn btn-success btn-sm'
-                            onClick={viewEdit ? handleEdit : handleDelete}
-                          >
-                            {viewEdit ? 'Update' : 'Delete'}
-                          </button>
-
-                          <button
-                            variant='secondary'
-                            className='btn btn-danger btn-sm'
-                            onClick={
-                              viewEdit ? handleEditClose : handleDeleteClose
-                            }
-                          >
-                            Close
-                          </button>
                         </div>
                       </Modal.Body>
+                      <Modal.Footer style={{ float: 'right' }}>
+                        <Button
+                          type='submit'
+                          onClick={viewEdit ? handleEdit : handleDelete}
+                          size='small'
+                          variant='contained'
+                          color='primary'
+                        >
+                          {viewEdit ? 'Update' : 'Delete'}
+                        </Button>
+
+                        <Button
+                          size='small'
+                          variant='outlined'
+                          onClick={
+                            viewEdit ? handleEditClose : handleDeleteClose
+                          }
+                        >
+                          Close
+                        </Button>
+                      </Modal.Footer>
                     </Modal>
                   </div>
                 </div>
