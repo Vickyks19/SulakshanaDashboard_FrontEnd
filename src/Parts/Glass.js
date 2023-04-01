@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Modal from 'react-bootstrap/Modal';
-import { IconButton, Button } from '@material-ui/core';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Modal from "react-bootstrap/Modal";
+import { IconButton, Button } from "@material-ui/core";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 function Glass() {
   const [glass, setGlass] = useState([]);
-  const [rowData, setRowData] = useState('');
+  const [rowData, setRowData] = useState("");
 
   const [viewPost, setPostShow] = useState(false);
   const handlePostShow = () => setPostShow(true);
@@ -17,21 +17,21 @@ function Glass() {
   const handleEditShow = () => setEditShow(true);
   const handleEditClose = () => setEditShow(false);
 
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
 
   const [viewDelete, setDeleteShow] = useState(false);
   const handleDeleteShow = () => setDeleteShow(true);
   const handleDeleteClose = () => setDeleteShow(false);
 
-  const [slNo, setSlNo] = useState('');
-  const [name, setName] = useState('');
-  const [width, setWidth] = useState('');
-  const [height, setHeight] = useState('');
-  const [rate, setRate] = useState('');
+  const [slNo, setSlNo] = useState("");
+  const [name, setName] = useState("");
+  const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
+  const [rate, setRate] = useState("");
 
   const FrameData = () => {
     axios
-      .get('http://localhost:4000/glassData')
+      .get("http://localhost:4000/glassData")
 
       .then((data) => {
         setGlass(data.data.data);
@@ -44,7 +44,7 @@ function Glass() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:4000/glass', {
+      .post("http://localhost:4000/glass", {
         name,
         width,
         height,
@@ -53,10 +53,10 @@ function Glass() {
       .then((data) => {
         setGlass([data.data.data, ...glass]);
         setPostShow(false);
-        setName('');
-        setWidth('');
-        setHeight('');
-        setRate('');
+        setName("");
+        setWidth("");
+        setHeight("");
+        setRate("");
       })
       .catch((err) => {
         console.log(err);
@@ -65,7 +65,7 @@ function Glass() {
 
   const handleEdit = (e) => {
     e.preventDefault();
-    const Edit = [setName(''), setWidth(), setHeight(), setRate()];
+    const Edit = [setName(""), setWidth(), setHeight(), setRate()];
     axios
       .put(`http://localhost:4000/glassData/${id}`, {
         slNo,
@@ -105,48 +105,29 @@ function Glass() {
   }, []);
 
   return (
-    <div className='pcoded-content'>
+    <div className="pcoded-content">
       <h5>GLASS</h5>
-      <div className='pcoded-inner-content'>
+      <div className="pcoded-inner-content">
         {/* Main-body start */}
-        <div className='main-body'>
-          <div className='page-wrapper'>
-            <div className='page-body'>
+        <div className="main-body">
+          <div className="page-wrapper">
+            <div className="page-body">
               {/* Basic table card start */}
-              <div className='card'>
-                <div className='card-header'>
+              <div className="card">
+                <div className="card-header">
                   {/* <h5>Glass</h5> */}
                   <Button
                     onClick={handlePostShow}
-                    variant='contained'
-                    color='primary'
-                    size='small'
+                    variant="contained"
+                    color="primary"
+                    size="small"
                   >
                     Add Glass
                   </Button>
-
-                  {/* 
-                            <div className="card-header-right">
-                              <ul className="list-unstyled card-option">
-                                <li>
-                                  <i className="icofont icofont-simple-left" />
-                                </li>
-
-                                <li>
-                                  <i className="icofont icofont-ui-edit" />
-                                </li>
-                                <li>
-                                  <i className="icofont icofont-ui-delete" />
-                                </li>
-                                <li>
-                                  <i className="icofont icofont-error close-card" />
-                                </li>
-                              </ul>
-                            </div> */}
                 </div>
-                <div className='card-block table-border-style'>
-                  <div className='table-responsive'>
-                    <table className='table'>
+                <div className="card-block table-border-style">
+                  <div className="table-responsive">
+                    <table className="table">
                       <thead>
                         <tr>
                           <th>S. No.</th>
@@ -163,7 +144,7 @@ function Glass() {
                             <tr key={item._id}>
                               <td>
                                 <span style={{ paddingRight: 10 }}>
-                                  <input type='checkbox' />
+                                  <input type="checkbox" />
                                 </span>
                                 {index + 1}
                               </td>
@@ -173,7 +154,7 @@ function Glass() {
                               <td>{item.rate}</td>
                               <td style={{ minWidth: 190 }}>
                                 <IconButton
-                                  size='small'
+                                  size="small"
                                   onClick={() => {
                                     handleEditShow(
                                       setRowData(item),
@@ -184,16 +165,16 @@ function Glass() {
                                       setId(item._id)
                                     );
                                   }}
-                                  style={{ margin: '0 5px' }}
+                                  style={{ margin: "0 5px" }}
                                 >
                                   <EditIcon
-                                    style={{ color: '#3b6ba5' }}
-                                    fontSize='small'
+                                    style={{ color: "#3b6ba5" }}
+                                    fontSize="small"
                                   />
                                 </IconButton>
 
                                 <IconButton
-                                  size='small'
+                                  size="small"
                                   onClick={() => {
                                     handleDeleteShow(
                                       setRowData(item),
@@ -202,8 +183,8 @@ function Glass() {
                                   }}
                                 >
                                   <DeleteIcon
-                                    style={{ color: '#f03939' }}
-                                    fontSize='small'
+                                    style={{ color: "#f03939" }}
+                                    fontSize="small"
                                   />
                                 </IconButton>
                               </td>
@@ -214,11 +195,11 @@ function Glass() {
                     </table>
                   </div>
                   {/* Add start */}
-                  <div className='model-box-view'>
+                  <div className="model-box-view">
                     <Modal
                       show={viewPost}
                       onHide={handlePostClose}
-                      backdrop='static'
+                      backdrop="static"
                       keyboard={false}
                     >
                       <Modal.Header>
@@ -226,52 +207,52 @@ function Glass() {
                       </Modal.Header>
                       <Modal.Body>
                         <div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Name</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setName(e.target.value)}
-                              placeholder='Please enter Name'
+                              placeholder="Please enter Name"
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Width</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setWidth(e.target.value)}
-                              placeholder='Please enter width'
+                              placeholder="Please enter width"
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Height</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setHeight(e.target.value)}
-                              placeholder='Please enter Height'
+                              placeholder="Please enter Height"
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Rate</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setRate(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                             />
                           </div>
                           <button
-                            type='submit'
-                            className='btn btn-success btn-sm'
+                            type="submit"
+                            className="btn btn-success btn-sm"
                             onClick={handleSubmit}
                           >
                             Add
                           </button>
                           <button
-                            variant='secondary'
-                            className='btn btn-danger btn-sm'
+                            variant="secondary"
+                            className="btn btn-danger btn-sm"
                             onClick={handlePostClose}
                           >
                             Close
@@ -282,72 +263,72 @@ function Glass() {
                   </div>
                   {/* Add end */}
                   {/* Edit & Delete */}
-                  <div className='model-box-view'>
+                  <div className="model-box-view">
                     <Modal
                       show={viewEdit ? viewEdit : viewDelete}
                       onHide={
                         handleEditClose ? handleEditClose : handleDeleteClose
                       }
-                      backdrop='static'
+                      backdrop="static"
                       keyboard={false}
                     >
                       <Modal.Header>
                         <Modal.Title>
-                          {viewEdit ? 'Edit' : 'Delete'}
+                          {viewEdit ? "Edit" : "Delete"}
                         </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
                         <div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Name</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setName(e.target.value)}
-                              placeholder='Please enter Name'
+                              placeholder="Please enter Name"
                               defaultValue={rowData.name}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Width</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setWidth(e.target.value)}
-                              placeholder='Please enter width'
+                              placeholder="Please enter width"
                               defaultValue={rowData.width}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Height</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setHeight(e.target.value)}
-                              placeholder='Please enter Height'
+                              placeholder="Please enter Height"
                               defaultValue={rowData.height}
                             />
                           </div>
-                          <div className='form-group mt-3'>
+                          <div className="form-group mt-3">
                             <label>Rate</label>
                             <input
-                              type='text'
-                              className='form-control'
+                              type="text"
+                              className="form-control"
                               onChange={(e) => setRate(e.target.value)}
-                              placeholder='Please enter Rate'
+                              placeholder="Please enter Rate"
                               defaultValue={rowData.rate}
                             />
                           </div>
                           <button
-                            type='submit'
-                            className='btn btn-success btn-sm'
+                            type="submit"
+                            className="btn btn-success btn-sm"
                             onClick={viewEdit ? handleEdit : handleDelete}
                           >
-                            {viewEdit ? 'Update' : 'Delete'}
+                            {viewEdit ? "Update" : "Delete"}
                           </button>
                           <button
-                            variant='secondary'
-                            className='btn btn-danger btn-sm'
+                            variant="secondary"
+                            className="btn btn-danger btn-sm"
                             onClick={
                               viewEdit ? handleEditClose : handleDeleteClose
                             }
@@ -366,7 +347,7 @@ function Glass() {
           </div>
         </div>
         {/* Main-body end */}
-        <div id='styleSelector' />
+        <div id="styleSelector" />
       </div>
     </div>
   );

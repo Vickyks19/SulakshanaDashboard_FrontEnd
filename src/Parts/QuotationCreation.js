@@ -40,14 +40,6 @@ function QuotationCreation() {
 
   const [id, setId] = useState("");
 
-  const [price, setPrice] = useState({
-    // frame: 0,
-    // mount: 0,
-    // glass: 0,
-    // hardboard: 0,
-    // sellingRate: 0,
-  });
-
   const FrameData = () => {
     axios
       .get(`http://localhost:4000/quotationData`)

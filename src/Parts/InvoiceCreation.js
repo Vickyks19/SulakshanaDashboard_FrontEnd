@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Quotation.css";
 import { useNavigate, useLocation } from "react-router-dom";
 
-function Quotation() {
+function InvoiceCreation() {
   const [creation, setCreation] = useState([]);
   const [record, setRecord] = useState({});
-  const [quotation, setQuotation] = useState([]);
+  const [invoice, setInvoice] = useState([]);
 
   const location = useLocation();
   const newdata = location?.state || {};
-
-  const [id, setId] = useState("");
 
   const [price, setPrice] = useState({
     frame: 0,
@@ -24,16 +21,11 @@ function Quotation() {
   const [withTax, setWithTax] = useState(false);
   let navigate = useNavigate();
 
-  const [quotationNo, setQuotationNo] = useState(
-    newdata?.newdata?.quotationNo || 0
-  );
+  const [invoiceNo, setInvoiceNo] = useState(0);
+
   const [date, setDate] = useState();
-  const [customername, setCustomername] = useState(
-    newdata?.newdata?.customername || ""
-  );
-  const [billingaddress, setBillingaddress] = useState(
-    newdata?.newdata?.billingaddress || ""
-  );
+  const [customername, setCustomername] = useState("");
+  const [billingaddress, setBillingaddress] = useState("");
 
   const [paintingName, setPaintingName] = useState("");
 
@@ -41,9 +33,7 @@ function Quotation() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
-  const [grandTotal, setgrandToatal] = useState(
-    newdata?.newdata?.grandTotal || 0
-  );
+  const [grandTotal, setgrandToatal] = useState(0);
 
   let addMode = {};
   let editMode = {};
@@ -73,8 +63,8 @@ function Quotation() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:4000/quotation", {
-        quotationNo,
+      .post("http://localhost:4000/invoice", {
+        invoiceNo,
         date,
         customername,
         billingaddress,
@@ -84,38 +74,8 @@ function Quotation() {
       })
 
       .then((data) => {
-        setQuotation([data.data.data, ...quotation]);
+        setInvoice([data.data.data, ...invoice]);
 
-        navigate("/quotation");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const handleEdit = () => {
-    axios
-      .put(`http://localhost:4000/quotationData/${newdata?.newdata?._id}`, {
-        quotationNo: quotationNo,
-        date: date,
-        customername: customername,
-        billingaddress: billingaddress,
-        items: items,
-        total: total,
-        grandTotal: grandTotal,
-      })
-      .then((data) => {
-        console.log(1, data);
-
-        const index = quotation.findIndex((item) => {
-          return item._id === id;
-        });
-
-        console.log(2, index);
-        const newFrames = quotation;
-        newFrames.splice(index, 1, data.data.data);
-        console.log(3, newFrames);
-        setQuotation(newFrames);
         navigate("/quotation");
       })
       .catch((err) => {
@@ -239,66 +199,13 @@ function Quotation() {
     setgrandToatal(grandTotal);
   };
 
-  const formEdit = () => {
-    if (newdata) {
-      let newsize = {};
-
-      newdata?.newdata?.items?.map((item) => {
-        if (item?.Name !== "painting") {
-          newsize[`${item.name}Size`] = item.size;
-          return { [`${item.name}Size`]: item.size };
-        }
-      });
-
-      setSize(newsize);
-    }
-
-    if (newdata?.newdata) {
-      let priceNew = {};
-
-      newdata?.newdata?.items?.map((item) => {
-        if (item?.Name !== "painting") {
-          priceNew[`${item.name}`] = item.price;
-          return { [`${item.name}`]: item.price };
-        } else {
-          priceNew.sellingRate = item.price;
-        }
-      });
-
-      setPrice({ ...price, ...priceNew });
-    }
-
-    if (newdata?.newdata) {
-      const paintEdit = newdata?.newdata?.items?.find((item) => {
-        if (item.Name === "painting") {
-          return item?.name;
-        }
-      });
-      return setPaintingName(paintEdit?.name);
-    }
-  };
-
-  const Qty = (entity) => {
-    const newQty = newdata?.newdata?.items?.find((item) => {
-      if (item.name === entity) {
-        return item.qty;
-      }
-    });
-    return newQty?.qty;
-  };
-
-  useEffect(() => {
-    formEdit();
-    Qty();
-  }, []);
-
   useEffect(() => {
     FrameData();
   }, []);
 
   return (
     <div className="pcoded-content">
-      <h5>Quotation</h5>
+      <h5>Invoice</h5>
       <div className="pcoded-inner-content">
         {/* Main-body start */}
         <div className="main-body">
@@ -309,21 +216,17 @@ function Quotation() {
               {/* Basic table card start */}
               <div className="card">
                 <div className="card-header">
-                  <div
-                    className="container"
-                    style={newdata ? editMode : addMode}
-                  >
+                  <div className="container">
                     <div className="Add">
                       <div className="form-row">
                         <div className="col-md-4 mb-3">
-                          <label>Quotation No</label>
+                          <label>Invoice No</label>
                           <input
                             type="text"
                             className="form-control"
                             placeholder=""
-                            onChange={(e) => setQuotationNo(e.target.value)}
+                            onChange={(e) => setInvoiceNo(e.target.value)}
                             required
-                            value={quotationNo}
                           />
                         </div>
                         <div className="col-md-4 mb-3">
@@ -334,7 +237,6 @@ function Quotation() {
                             placeholder=""
                             onChange={(e) => setDate(e.target.value)}
                             required
-                            defaultValue={newdata?.newdata?.date}
                           />
                         </div>
                       </div>
@@ -350,7 +252,6 @@ function Quotation() {
                               setCustomername(e.target.value);
                               setSelected(e.target.value);
                             }}
-                            value={customername}
                           >
                             <option>Select...</option>
                             {record.creationData?.map((item, index) => (
@@ -393,7 +294,6 @@ function Quotation() {
                             onChange={(e) => {
                               setSize({ ...size, frameSize: e.target.value });
                             }}
-                            value={size.frameSize}
                           >
                             <option>Select...</option>
                             {record.frameData?.map((item) => (
@@ -415,7 +315,6 @@ function Quotation() {
                             onChange={(e) => {
                               calculate(e.target.value, "frame");
                             }}
-                            defaultValue={Qty("frame")}
                           />
                         </div>
 
@@ -428,7 +327,6 @@ function Quotation() {
                             placeholder=""
                             required
                             value={price.frame}
-                            defaultValue={price.frame}
                           />
                         </div>
                       </div>
@@ -446,7 +344,6 @@ function Quotation() {
                             onChange={(e) => {
                               setSize({ ...size, mountSize: e.target.value });
                             }}
-                            value={size.mountSize}
                           >
                             <option value="all">Select...</option>
                             {record.mountData?.map((item) => (
@@ -466,7 +363,6 @@ function Quotation() {
                             onChange={(e) => {
                               calculate(e.target.value, "mount");
                             }}
-                            defaultValue={Qty("mount")}
                           />
                         </div>
 
@@ -478,7 +374,6 @@ function Quotation() {
                             className="form-control"
                             placeholder=""
                             value={price.mount}
-                            defaultValue={price.mount}
                             required
                           />
                         </div>
@@ -496,7 +391,6 @@ function Quotation() {
                             onChange={(e) =>
                               setSize({ ...size, glassSize: e.target.value })
                             }
-                            value={size.glassSize}
                           >
                             <option>Select...</option>
                             {record.glassData?.map((item) => (
@@ -522,7 +416,6 @@ function Quotation() {
                             onChange={(e) => {
                               calculate(e.target.value, "glass");
                             }}
-                            defaultValue={Qty("glass")}
                           />
                         </div>
 
@@ -533,7 +426,6 @@ function Quotation() {
                             type="text"
                             name="price.glass"
                             value={price.glass}
-                            defaultValue={price.glass}
                             className="form-control"
                             placeholder=""
                             required
@@ -556,7 +448,6 @@ function Quotation() {
                                 hardboardSize: e.target.value,
                               })
                             }
-                            value={size.hardboardSize}
                           >
                             <option>Select...</option>
                             {record.hardboardData?.map((item) => (
@@ -578,7 +469,6 @@ function Quotation() {
                             onChange={(e) => {
                               calculate(e.target.value, "hardboard");
                             }}
-                            defaultValue={Qty("hardboard")}
                             required
                           />
                         </div>
@@ -589,7 +479,6 @@ function Quotation() {
                             type="price"
                             name="price.hardboard"
                             value={price.hardboard}
-                            defaultValue={price.hardboard}
                             className="form-control"
                             placeholder=""
                             required
@@ -610,7 +499,6 @@ function Quotation() {
                               setPaintingName(e.target.value);
                               setPaint(e.target.value);
                             }}
-                            value={paintingName}
                           >
                             <option>Select...</option>
                             {record.paintingData?.map((item) => (
@@ -626,7 +514,6 @@ function Quotation() {
                           <input
                             type="price"
                             value={price.sellingRate}
-                            defaultValue={price.sellingRate}
                             className="form-control"
                             placeholder=""
                             required
@@ -694,7 +581,7 @@ function Quotation() {
                       </div>
                       <button
                         type="submit"
-                        onClick={newdata?.newdata ? handleEdit : handleSubmit}
+                        onClick={handleSubmit}
                         className="btn btn-success btn-sm "
                       >
                         {newdata?.newdata ? "Edit" : "Add"}
@@ -722,4 +609,4 @@ function Quotation() {
   );
 }
 
-export default Quotation;
+export default InvoiceCreation;

@@ -5,10 +5,9 @@ import Modal from "react-bootstrap/Modal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import "./Frame.css";
 import { Button, IconButton } from "@material-ui/core";
 
-function Creation() {
+function Customer() {
   const [creation, setCreation] = useState([]);
   const [rowData, setRowData] = useState("");
 
@@ -619,4 +618,4 @@ function Creation() {
   );
 }
 
-export default Creation;
+export default Customer;
