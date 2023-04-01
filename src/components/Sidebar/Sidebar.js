@@ -8,6 +8,9 @@ import { HiOutlineReceiptTax } from "react-icons/hi";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ReportIcon from "@mui/icons-material/Report";
 import BrushIcon from "@mui/icons-material/Brush";
+import PeopleIcon from "@mui/icons-material/People";
+import FilterFramesIcon from "@mui/icons-material/FilterFrames";
+import ImageIcon from "@mui/icons-material/Image";
 import { Menu, MenuItem, ProSidebarProvider, SubMenu } from "react-pro-sidebar";
 
 function Sidebar() {
@@ -36,8 +39,18 @@ function Sidebar() {
           </div>
           <Menu>
             <SubMenu label="Masters">
-              <MenuItem component={<Link to="/frame" />}>FRAME</MenuItem>
-              <MenuItem component={<Link to="/mount" />}>Mount</MenuItem>
+              <MenuItem
+                component={<Link to="/frame" />}
+                icon={<FilterFramesIcon fontSize="small" />}
+              >
+                FRAME
+              </MenuItem>
+              <MenuItem
+                component={<Link to="/mount" />}
+                icon={<ImageIcon fontSize="small" />}
+              >
+                Mount
+              </MenuItem>
               <MenuItem component={<Link to="/glass" />}>Glass</MenuItem>
               <MenuItem component={<Link to="/hardboard" />}>
                 Hardboard
@@ -45,19 +58,15 @@ function Sidebar() {
               <MenuItem component={<Link to="/tax" />}>Tax</MenuItem>
             </SubMenu>
           </Menu>
+
           <Menu>
-            <SubMenu label="Customer">
-              <MenuItem component={<Link to="/creation" />}>Creation</MenuItem>
-              <MenuItem component={<Link to="" />}>List</MenuItem>
-            </SubMenu>
-          </Menu>
-          <Menu>
-            <SubMenu label="Quotation">
-              <MenuItem component={<Link to="/quotation" />}>Creation</MenuItem>
-              <MenuItem component={<Link to="" />}>Info</MenuItem>
-            </SubMenu>
-          </Menu>
-          <Menu>
+            <MenuItem
+              component={<Link to="/customer" />}
+              icon={<PeopleIcon fontSize="small" />}
+            >
+              Customer
+            </MenuItem>
+            <MenuItem component={<Link to="/quotation" />}>Quotation</MenuItem>
             <MenuItem component={<Link to="/invoice" />}>Invoice</MenuItem>
             <MenuItem
               component={<Link to="/painting" />}
