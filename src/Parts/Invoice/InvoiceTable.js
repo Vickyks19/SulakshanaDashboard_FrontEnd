@@ -1,280 +1,89 @@
 import React from "react";
 import { Text, View, StyleSheet } from "@react-pdf/renderer";
+import { formatCurrency } from "./helpers/common";
 
 const styles = StyleSheet.create({
-  container_table: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    marginLeft: "2px",
-    marginTop: "24px",
-    border: "2px solid black",
+  table: {
+    display: "table",
     width: "100%",
+    border: "1px solid grey",
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderTopWidth: 0,
+    fontSize: "15px",
   },
-  container_items: {
-    marginTop: "20px",
-    display: "flex",
+  tableRow: {
+    margin: "auto",
     flexDirection: "row",
-    borderBottom: "1px solid black",
-    paddingBottom: "2%",
-    width: "100%",
   },
-
-  description: {
-    fontSize: "15px",
+  tableCol: {
+    width: "25%",
+    border: "1px solid grey",
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
   },
-  qty: {
-    fontSize: "15px",
-    marginLeft: "21%",
+  tableCell: {
+    margin: "auto",
+    marginTop: 5,
+    fontSize: 10,
   },
-  rate: {
-    fontSize: "15px",
-    marginLeft: "20%",
+  tableHeader: {
+    fontSize: 10,
+    margin: "5 5 2 5",
+    fontFamily: "Helvetica-Bold",
+    textAlign: "right",
   },
-  amount: {
-    fontSize: "15px",
-    marginLeft: "20%",
-  },
-
-  row: {
-    marginTop: "3%",
-    paddingBottom: "2%",
-    display: "flex",
-    flexDirection: "row",
-    borderBottom: "1px solid black",
-    width: "100%",
-  },
-  description_item: {
-    fontSize: "15px",
-  },
-  // qty_item: {
-  //   fontSize: "15px",
-  //   marginRight: "-5%",
-  //   marginLeft: "26.5%",
-  // },
-  // rate_item: {
-  //   fontSize: "15px",
-  //   marginLeft: "26.5%",
-  // },
-  // amount_item: {
-  //   fontSize: "15px",
-  //   marginLeft: "26%",
-  // },
-
-  qty_item: {
-    fontSize: "15px",
-    paddingLeft: "25.5%",
-  },
-  rate_item: {
-    fontSize: "15px",
-    paddingLeft: "21%",
-  },
-  amount_item: {
-    fontSize: "15px",
-    paddingLeft: "22%",
-  },
-
-  // description_mount: {
-  //   fontSize: "15px",
-  // },
-  // qty_mount: {
-  //   fontSize: "15px",
-  //   marginRight: "-5%",
-  //   marginLeft: "26%",
-  // },
-  // rate_mount: {
-  //   fontSize: "15px",
-  //   marginLeft: "25.5%",
-  // },
-  // amount_mount: {
-  //   fontSize: "15px",
-  //   marginLeft: "24%",
-  // },
-
-  // description_glass: {
-  //   fontSize: "15px",
-  // },
-  // qty_glass: {
-  //   fontSize: "15px",
-  //   marginRight: "-5%",
-  //   marginLeft: "27%",
-  // },
-  // rate_glass: {
-  //   fontSize: "15px",
-  //   marginLeft: "25.5%",
-  // },
-  // amount_glass: {
-  //   fontSize: "15px",
-  //   marginLeft: "24.3%",
-  // },
-
-  // description_hardboard: {
-  //   fontSize: "15px",
-  // },
-  // qty_hardboard: {
-  //   fontSize: "15px",
-  //   marginRight: "-5%",
-  //   marginLeft: "21.2%",
-  // },
-  // rate_hardboard: {
-  //   fontSize: "15px",
-  //   marginLeft: "25.5%",
-  // },
-  // amount_hardboard: {
-  //   fontSize: "15px",
-  //   marginLeft: "24.6%",
-  // },
 });
 
 function InvoiceTable({ invoiceNew }) {
   return (
-    <View className="container_table" style={styles.container_table}>
-      <View className="container_items" style={styles.container_items}>
-        {/* <Text className="description_items" style={{ fontSize: "15px" }}>
-          SlNo
-        </Text> */}
-        <Text className="description_items" style={styles.description}>
-          Item Description
-        </Text>
-        <Text className="qty_items" style={styles.qty}>
-          Qty
-        </Text>
-        <Text className="rate_items" style={styles.rate}>
-          Rate
-        </Text>
-        <Text className="amount_items" style={styles.amount}>
-          Amount
-        </Text>
-      </View>
+    <>
+      <View style={styles.table}>
+        <View style={[styles.tableRow, { backgroundColor: "lightgray" }]}>
+          <View style={[styles.tableCol, { width: "4%" }]}>
+            <Text style={[styles.tableHeader, { textAlign: "center" }]}>#</Text>
+          </View>
+          <View style={[styles.tableCol, { width: "60%" }]}>
+            <Text style={[styles.tableHeader, { textAlign: "left" }]}>
+              Item & Description
+            </Text>
+          </View>
+          <View style={[styles.tableCol, { width: "12%" }]}>
+            <Text style={[styles.tableHeader]}>Qty</Text>
+          </View>
+          <View style={[styles.tableCol, { width: "12%" }]}>
+            <Text style={[styles.tableHeader]}>Rate</Text>
+          </View>
+          <View style={[styles.tableCol, { width: "12%" }]}>
+            <Text style={[styles.tableHeader]}>Amount</Text>
+          </View>
+        </View>
 
-      <View style={styles.row}>
-        <Text style={styles.description_item}>
-          {invoiceNew?.invoiceNew.items[0].size}{" "}
-          {invoiceNew?.invoiceNew.items[0].name}
-        </Text>
-        <Text style={styles.qty_item}>
-          {invoiceNew?.invoiceNew.items[0].qty}
-        </Text>
-        <Text style={styles.rate_item}>
-          {invoiceNew?.invoiceNew.items[0].price}
-        </Text>
-        <Text style={styles.amount_item}>
-          {invoiceNew?.invoiceNew.items[0].price}
-        </Text>
+        {invoiceNew.items?.map((e, i) => {
+          return (
+            <View style={styles.tableRow}>
+              <View style={[styles.tableCol, { width: "4%" }]}>
+                <Text style={[styles.tableCell]}>{i + 1}</Text>
+              </View>
+              <View style={[styles.tableCol, { width: "60%" }]}>
+                <Text style={[styles.tableCell]}>
+                  {e?.size || ""} {e?.name || ""}
+                </Text>
+              </View>
+              <View style={[styles.tableCol, { width: "12%" }]}>
+                <Text style={[styles.tableCell]}>{e?.qty}</Text>
+              </View>
+              <View style={[styles.tableCol, { width: "12%" }]}>
+                <Text style={styles.tableCell}>{formatCurrency(e?.price)}</Text>
+              </View>
+              <View style={[styles.tableCol, { width: "12%" }]}>
+                <Text style={styles.tableCell}>{formatCurrency(e?.price)}</Text>
+              </View>
+            </View>
+          );
+        })}
       </View>
-
-      <View style={styles.row}>
-        <Text style={styles.description_item}>
-          {invoiceNew?.invoiceNew.items[1].size}{" "}
-          {invoiceNew?.invoiceNew.items[1].name}
-        </Text>
-        <Text style={styles.qty_item}>
-          {invoiceNew?.invoiceNew.items[1].qty}
-        </Text>
-        <Text style={styles.rate_item}>
-          {invoiceNew?.invoiceNew.items[1].price}
-        </Text>
-        <Text style={styles.amount_item}>
-          {invoiceNew?.invoiceNew.items[1].price}
-        </Text>
-      </View>
-
-      <View style={styles.row}>
-        <Text style={styles.description_item}>
-          {invoiceNew?.invoiceNew.items[2].size}{" "}
-          {invoiceNew?.invoiceNew.items[2].name}
-        </Text>
-        <Text style={styles.qty_item}>
-          {invoiceNew?.invoiceNew.items[2].qty}
-        </Text>
-        <Text style={styles.rate_item}>
-          {invoiceNew?.invoiceNew.items[2].price}
-        </Text>
-        <Text style={styles.amount_item}>
-          {invoiceNew?.invoiceNew.items[2].price}
-        </Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.description_item}>
-          {invoiceNew?.invoiceNew.items[3].size}{" "}
-          {invoiceNew?.invoiceNew.items[3].name}
-        </Text>
-        <Text style={styles.qty_item}>
-          {invoiceNew?.invoiceNew.items[3].qty}
-        </Text>
-        <Text style={styles.rate_item}>
-          {invoiceNew?.invoiceNew.items[3].price}
-        </Text>
-        <Text style={styles.amount_item}>
-          {invoiceNew?.invoiceNew.items[3].price}
-        </Text>
-      </View>
-      {/* <View className="row" style={styles.row}>
-        <Text style={styles.description_item}>
-          {invoiceNew?.invoiceNew.items[4].size}{" "}
-          {invoiceNew?.invoiceNew.items[4].name}
-        </Text>
-        <Text style={styles.qty_item}>
-          {invoiceNew?.invoiceNew.items[4].qty}
-        </Text>
-        <Text style={styles.rate_item}>
-          {invoiceNew?.invoiceNew.items[4].price}
-        </Text>
-        <Text style={styles.amount_item}>
-          {invoiceNew?.invoiceNew.items[4].price}
-        </Text>
-      </View> */}
-
-      <View
-        className="row_total"
-        style={{
-          marginTop: "5%",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Text
-          className="total"
-          style={{ fontSize: "15px", marginLeft: "83.5%" }}
-        >
-          Total
-        </Text>
-        <Text
-          className="total_item"
-          style={{
-            fontSize: "15px",
-            marginLeft: "5%",
-          }}
-        >
-          {invoiceNew.invoiceNew.total}
-        </Text>
-      </View>
-
-      <View
-        className="row_total"
-        style={{
-          marginTop: "2%",
-          display: "flex",
-          flexDirection: "row",
-        }}
-      >
-        <Text
-          className="total"
-          style={{ fontSize: "15px", marginLeft: "76.2%" }}
-        >
-          GrandTotal
-        </Text>
-        <Text
-          className="total_item"
-          style={{
-            fontSize: "15px",
-            marginRight: "-2%",
-            marginLeft: "5%",
-          }}
-        >
-          {invoiceNew.invoiceNew.grandTotal}
-        </Text>
-      </View>
-    </View>
+    </>
   );
 }
 

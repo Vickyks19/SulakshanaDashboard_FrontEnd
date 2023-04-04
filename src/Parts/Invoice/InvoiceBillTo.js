@@ -1,26 +1,39 @@
 import React from "react";
-import { Text, View } from "@react-pdf/renderer";
-// import "./BillTo.css";
+import { Text, View, StyleSheet } from "@react-pdf/renderer";
+
+const styles = StyleSheet.create({
+  container: {
+    border: "1px solid grey",
+    lineHeight: 1.5,
+    padding: "2px 5px",
+  },
+
+  label: { fontSize: 10 },
+  value: { fontSize: 10 },
+  fontBold: {
+    fontFamily: "Helvetica-Bold",
+  },
+});
 
 function InvoiceBillTo({ invoiceNew }) {
   console.log(6, invoiceNew);
   return (
-    <View
-      className="headerContainer_billTo"
-      style={{ marginTop: "30px", paddingLeft: "1%" }}
-    >
-      <Text className="billTo" style={{ fontSize: "15px", paddingLeft: "1%" }}>
-        Bill To:
-      </Text>
-      <Text
-        className="cus"
-        style={{ marginTop: "10px", fontSize: "15px", paddingLeft: "2%" }}
-      >
-        {invoiceNew?.invoiceNew.customername}
-      </Text>
-      <Text style={{ marginTop: "5px", fontSize: "15px", paddingLeft: "2%" }}>
-        {invoiceNew?.invoiceNew.billingaddress}
-      </Text>
+    <View>
+      <View style={[styles.container, { backgroundColor: "lightgrey" }]}>
+        <Text style={styles.label}>Bill To</Text>
+      </View>
+      <View style={[styles.container, { borderTopWidth: 0 }]}>
+        <Text style={[styles.value, styles.fontBold]}>
+          {invoiceNew?.customername || ""}
+        </Text>
+        <Text style={[styles.value, styles.fontBold]}>
+          {invoiceNew?.billingaddress || ""}
+        </Text>
+      </View>
+      <View style={[styles.container, { borderTopWidth: 0 }]}>
+        <Text style={styles.value}>Subject :</Text>
+        <Text style={styles.value}>Picture Framing</Text>
+      </View>
     </View>
   );
 }
