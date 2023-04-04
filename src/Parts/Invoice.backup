@@ -2,42 +2,58 @@ import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
 
 import InvoiceView from "./Invoice/InvoiceView";
-import { IconButton, Button, Modal as MUIModal } from "@material-ui/core";
+import { IconButton, Button } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import Modal from "react-bootstrap/Modal";
+
 import { useNavigate } from "react-router-dom";
-import InvoiceCreation from "./InvoiceCreation";
+// import DatePicker from "react-date-picker";
+
+import { PDFViewer } from "@react-pdf/renderer";
+
+import "./Frame.css";
 
 function Invoice() {
-  const [invoices, setInvoices] = useState([]);
-
+  const [quotation, setQuotation] = useState([]);
+  const [invoice, setInvoice] = useState([]);
+  console.log(1, invoice);
+  const [rowData, setRowData] = useState("");
+  // const [filterNew, setFilterNew] = useState({});
   const [filterInvoice, setFilterInvoice] = useState({});
   console.log(2, filterInvoice);
-
-  const [newDataInv, setNewDataInv] = useState({});
+  // console.log(frames);
   let navigate = useNavigate();
-
   const [viewPost, setPostShow] = useState(false);
-  const handlePostShow = () => {
-    setPostShow(!viewPost);
-  };
+  const handlePostShow = () => setPostShow(true);
 
   const [view, setViewShow] = useState(false);
+  // const handleViewShow = () => setViewShow(true);
+  // const handleViewClose = () => setViewShow(false);
+
+  const [viewEdit, setEditShow] = useState(false);
+  const handleEditShow = () => setEditShow(true);
+  const Edit = () => setEditShow(true);
+  const handleEditClose = () => setEditShow(false);
 
   const [id, setId] = useState("");
 
-  const EditInvoice = () => {
-    setNewDataInv({});
+  const [viewDelete, setDeleteShow] = useState(false);
+  const handleDeleteShow = () => setDeleteShow(true);
+  const handleDeleteClose = () => setDeleteShow(false);
+
+
+  
+  const addQuotation = () => {
+    setNewData({});
     handlePostShow();
   };
 
   const FrameData = () => {
     axios
-      .get(`http://localhost:4000/invoiceData`)
+      .get(`http://localhost:4000/quotationData`)
+
       .then((data) => {
-        console.log(41, data.data.data);
-        setInvoices(data.data.data);
+        setInvoice(data.data.data);
+        console.log(data.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -45,7 +61,8 @@ function Invoice() {
   };
 
   const handleView = (id) => {
-    const filterInvoice = invoices.find((item) => item._id === id);
+    const filterInvoice = invoice.find((item) => item._id === id);
+
     setFilterInvoice(filterInvoice);
     console.log(3, filterInvoice);
   };
@@ -54,20 +71,13 @@ function Invoice() {
     setViewShow(!view);
   };
 
-  const captureEdit = (id) => {
-    console.log(75, id);
-    let filteredInv = invoices.find((item) => item._id === id);
-    setNewDataInv(filteredInv);
-    handlePostShow();
-  };
-
   useEffect(() => {
     FrameData();
   }, []);
   return (
-    <>
+    <div>
       <div className="pcoded-content">
-        <h5>Invoice</h5>
+        <h5>INVOICE</h5>
         <div className="pcoded-inner-content">
           {/* Main-body start */}
           <div className="main-body">
@@ -78,37 +88,39 @@ function Invoice() {
                 {/* Basic table card start */}
                 <div className="card">
                   <div className="card-header">
-                    {/* <h5>Quotation</h5> */}
-
-                    {/* <Button
-                      onClick={addQuotation}
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                    >
-                      Add Quotation
-                    </Button> */}
+                    <a href="/quote">
+                      <Button
+                        onClick={handlePostShow}
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                      >
+                        Add Invoice
+                      </Button>
+                    </a>
                   </div>
                   <div className="card-block table-border-style">
                     <div className="table-responsive">
                       <table className="table">
                         <thead>
                           <tr>
-                            <th>Invoice No.</th>
+                            <th>Quotation No</th>
                             <th>Customer Name</th>
-
+                            {/* <th>Phonenumber</th> */}
+                            {/* <th>Address</th> */}
                             <th>Billing Address</th>
                             <th>Grand Total</th>
-
+                            {/* <th>EmailID</th> */}
+                            {/* <th>Gender</th> */}
                             <th>Actions</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {invoices.map((item, index) => {
+                          {invoice.map((item, index) => {
                             return (
                               <tr key={item._id}>
                                 <td>
-                                  <span style={{ marginRight: 10 }}>
+                                  <span style={{ paddingRight: 10 }}>
                                     <input type="checkbox" />
                                   </span>
                                   {item.quotationNo}
@@ -127,21 +139,31 @@ function Invoice() {
                                     View
                                   </Button>
 
+                                  <Button
+                                    size="small"
+                                    variant="contained"
+                                    color="primary"
+                                    style={{ margin: "0 5px" }}
+                                    onClick={() => {
+                                      handleEditShow(
+                                      
+
+                                        setId(item._id)
+                                      );
+                                    }}
+                                  >
+                                    Generate
+                                  </Button>
+
                                   <IconButton
                                     size="small"
-                                    onClick={(e) => {
-                                      EditInvoice();
-                                      captureEdit(item._id, setId(item._id));
+                                    onClick={() => {
+                                      handleDeleteShow(
+                                        setRowData(item),
+                                        setId(item._id)
+                                      );
                                     }}
-                                    style={{ margin: "0 5px" }}
                                   >
-                                    <EditIcon
-                                      style={{ color: "#3b6ba5" }}
-                                      fontSize="small"
-                                    />
-                                  </IconButton>
-
-                                  <IconButton size="small">
                                     <DeleteIcon
                                       style={{ color: "#f03939" }}
                                       fontSize="small"
@@ -154,13 +176,15 @@ function Invoice() {
                         </tbody>
                       </table>
                     </div>
-
-                    <MUIModal open={view}>
-                      <InvoiceView
-                        invoiceNew={filterInvoice}
-                        onClose={() => setViewShow(false)}
-                      />
-                    </MUIModal>
+                    {view ? (
+                      <div className="popup-box">
+                        <Fragment className="box">
+                          <PDFViewer width="1000" height="600" className="pdf">
+                            <InvoiceView invoiceNew={filterInvoice} />
+                          </PDFViewer>
+                        </Fragment>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
@@ -168,24 +192,10 @@ function Invoice() {
             </div>
           </div>
           {/* Main-body end */}
-          {/* <div id="styleSelector" /> */}
+          <div id="styleSelector" />
         </div>
       </div>
-      <Modal
-        show={viewPost}
-        onHide={handlePostShow}
-        backdrop="static"
-        keyboard={false}
-        dialogClassName="modal-90w"
-      >
-        <InvoiceCreation
-          onHide={handlePostShow}
-          invdata={newDataInv}
-          invoices={invoices}
-          setInvoices={setInvoices}
-        />
-      </Modal>
-    </>
+    </div>
   );
 }
 

@@ -1,24 +1,24 @@
-import './Frame.css';
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button, IconButton, Modal as MUIModal } from '@material-ui/core';
-import Modal from 'react-bootstrap/Modal';
+import "./Frame.css";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Button, IconButton, Modal as MUIModal } from "@material-ui/core";
+import Modal from "react-bootstrap/Modal";
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+// import { TableSortLabel } from '@mui/material';
 
-import QuotationView from './QuotationView';
-import './QuotationCreation.css';
+import QuotationView from "./QuotationView";
+import "./QuotationCreation.css";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-import './Frame.css';
-import Quotation from './Quotation';
+import "./Frame.css";
+import Quotation from "./Quotation";
 
 function QuotationCreation() {
-  const [quotation, setQuotation] = useState([]);
-
-  const [rowData, setRowData] = useState('');
+  const [quotations, setQuotations] = useState([]);
+  console.log(1, quotations);
 
   const [filterNew, setFilterNew] = useState({});
 
@@ -36,15 +36,14 @@ function QuotationCreation() {
     handlePostShow();
   };
 
-  const [id, setId] = useState('');
+  const [id, setId] = useState("");
 
-  const FrameData = () => {
+  const QuoteData = () => {
     axios
-      .get(`http://localhost:4000/quotationData`)
-
+      .get("http://localhost:4000/quotationData")
       .then((data) => {
-        setQuotation(data.data.data);
-        console.log(data.data.data);
+        console.log(47, data.data.data);
+        setQuotations(data.data.data);
       })
       .catch((err) => {
         console.log(err);
@@ -52,7 +51,7 @@ function QuotationCreation() {
   };
 
   const handleView = (id) => {
-    const filterNew = quotation.find((item) => item._id === id);
+    const filterNew = quotations.find((item) => item._id === id);
     console.log(12, filterNew);
     setFilterNew(filterNew);
   };
@@ -63,7 +62,7 @@ function QuotationCreation() {
 
   const captureEdit = (id) => {
     console.log(75, id);
-    let filtered = quotation.find((item) => item._id === id);
+    let filtered = quotations.find((item) => item._id === id);
     setNewData(filtered);
     handlePostShow();
   };
@@ -72,8 +71,8 @@ function QuotationCreation() {
     axios
       .delete(`http://localhost:4000/quotationData/${id}`)
       .then((res) => {
-        const newQuote = quotation.filter((e) => e._id !== id);
-        setQuotation(newQuote);
+        const newQuote = quotations.filter((e) => e._id !== id);
+        setQuotations(newQuote);
       })
       .catch((err) => {
         console.log(err);
@@ -81,37 +80,37 @@ function QuotationCreation() {
   };
 
   useEffect(() => {
-    FrameData();
+    QuoteData();
   }, []);
 
   return (
     <>
-      <div className='pcoded-content'>
+      <div className="pcoded-content">
         <h5>QUOTATION</h5>
-        <div className='pcoded-inner-content'>
+        <div className="pcoded-inner-content">
           {/* Main-body start */}
-          <div className='main-body'>
-            <div className='page-wrapper'>
+          <div className="main-body">
+            <div className="page-wrapper">
               {/* Page-body start */}
 
-              <div className='page-body'>
+              <div className="page-body">
                 {/* Basic table card start */}
-                <div className='card'>
-                  <div className='card-header'>
+                <div className="card">
+                  <div className="card-header">
                     {/* <h5>Quotation</h5> */}
 
                     <Button
                       onClick={addQuotation}
-                      variant='contained'
-                      color='primary'
-                      size='small'
+                      variant="contained"
+                      color="primary"
+                      size="small"
                     >
                       Add Quotation
                     </Button>
                   </div>
-                  <div className='card-block table-border-style'>
-                    <div className='table-responsive'>
-                      <table className='table'>
+                  <div className="card-block table-border-style">
+                    <div className="table-responsive">
+                      <table className="table">
                         <thead>
                           <tr>
                             <th>Quotation No.</th>
@@ -124,12 +123,12 @@ function QuotationCreation() {
                           </tr>
                         </thead>
                         <tbody>
-                          {quotation.map((item, index) => {
+                          {quotations.map((item, index) => {
                             return (
                               <tr key={item._id}>
                                 <td>
                                   <span style={{ marginRight: 10 }}>
-                                    <input type='checkbox' />
+                                    <input type="checkbox" />
                                   </span>
                                   {item.quotationNo}
                                 </td>
@@ -138,8 +137,8 @@ function QuotationCreation() {
                                 <td>{item.grandTotal}</td>
                                 <td style={{ minWidth: 190 }}>
                                   <Button
-                                    size='small'
-                                    variant='outlined'
+                                    size="small"
+                                    variant="outlined"
                                     onClick={(e) => {
                                       handleView(item._id, togglePopup());
                                     }}
@@ -148,27 +147,27 @@ function QuotationCreation() {
                                   </Button>
 
                                   <IconButton
-                                    size='small'
+                                    size="small"
                                     onClick={(e) => {
                                       captureEdit(item._id, setId(item._id), e);
                                     }}
-                                    style={{ margin: '0 5px' }}
+                                    style={{ margin: "0 5px" }}
                                   >
                                     <EditIcon
-                                      style={{ color: '#3b6ba5' }}
-                                      fontSize='small'
+                                      style={{ color: "#3b6ba5" }}
+                                      fontSize="small"
                                     />
                                   </IconButton>
 
                                   <IconButton
-                                    size='small'
+                                    size="small"
                                     onClick={(e) => {
                                       handleDelete(item._id);
                                     }}
                                   >
                                     <DeleteIcon
-                                      style={{ color: '#f03939' }}
-                                      fontSize='small'
+                                      style={{ color: "#f03939" }}
+                                      fontSize="small"
                                     />
                                   </IconButton>
                                 </td>
@@ -198,11 +197,16 @@ function QuotationCreation() {
       <Modal
         show={viewPost}
         onHide={handlePostShow}
-        backdrop='static'
+        backdrop="static"
         keyboard={false}
-        dialogClassName='modal-90w'
+        dialogClassName="modal-90w"
       >
-        <Quotation onHide={handlePostShow} newdata={newData} />
+        <Quotation
+          onHide={handlePostShow}
+          newdata={newData}
+          quotations={quotations}
+          setQuotations={setQuotations}
+        />
       </Modal>
     </>
   );

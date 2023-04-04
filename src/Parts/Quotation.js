@@ -5,12 +5,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import { Button } from '@material-ui/core';
 
-function Quotation({ onHide, newdata }) {
+function Quotation({ onHide, newdata, setQuotations, quotations }) {
   const [creation, setCreation] = useState([]);
   const [record, setRecord] = useState({});
-  const [quotation, setQuotation] = useState([]);
 
-  const [id, setId] = useState('');
+  const [id, setId] = useState(newdata?._id);
 
   const [price, setPrice] = useState({
     frame: 0,
@@ -35,6 +34,7 @@ function Quotation({ onHide, newdata }) {
   const [size, setSize] = useState({});
   const [taxOptions, setTaxOptions] = useState(false);
   const [items, setItems] = useState([]);
+  console.log(36, items);
   const [total, setTotal] = useState(0);
   const [tax, setTax] = useState(0);
   const [grandTotal, setgrandToatal] = useState(newdata?.grandTotal || 0);
@@ -65,7 +65,6 @@ function Quotation({ onHide, newdata }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     axios
       .post('http://localhost:4000/quotation', {
         quotationNo,
@@ -78,7 +77,7 @@ function Quotation({ onHide, newdata }) {
       })
 
       .then((data) => {
-        setQuotation([data.data.data, ...quotation]);
+        setQuotations([data.data.data, ...quotations]);
 
         onHide();
       })
@@ -99,17 +98,12 @@ function Quotation({ onHide, newdata }) {
         grandTotal: grandTotal,
       })
       .then((data) => {
-        console.log(1, data);
-
-        const index = quotation.findIndex((item) => {
+        const index = quotations.findIndex((item) => {
           return item._id === id;
         });
-
-        console.log(2, index);
-        const newFrames = quotation;
+        const newFrames = quotations;
         newFrames.splice(index, 1, data.data.data);
-        console.log(3, newFrames);
-        setQuotation(newFrames);
+        setQuotations(newFrames);
         onHide();
       })
       .catch((err) => {
@@ -142,10 +136,8 @@ function Quotation({ onHide, newdata }) {
         name: paintingName,
         Name: 'painting',
         price: sellingRate,
-        test: sellingRate,
       },
     ]);
-
     const index = items.findIndex((item) => {
       return item?.Name === 'painting';
     });
@@ -161,42 +153,42 @@ function Quotation({ onHide, newdata }) {
   };
 
   const calculate = (qty, entity) => {
-    const rate =
-      record[`${entity}Data`].find((item) => {
-        return (
-          item.width.toString() + ' * ' + item.height.toString() ===
-          size[`${entity}Size`]
-        );
-      })?.rate || 0;
+    if (size[`${entity}Size`]) {
+      const rate =
+        record[`${entity}Data`].find((item) => {
+          return (
+            item.width.toString() + ' * ' + item.height.toString() ===
+            size[`${entity}Size`]
+          );
+        })?.rate || 0;
 
-    const newprice = qty * rate;
+      const newprice = qty * rate;
 
-    setPrice({ ...price, [entity]: newprice });
+      setPrice({ ...price, [entity]: newprice });
 
-    setItems([
-      ...items,
-      {
-        name: entity,
-        size: size?.[`${entity}Size`],
-        price,
-        qty,
-      },
-    ]);
+      setItems([
+        ...items,
+        {
+          name: entity,
+          size: size?.[`${entity}Size`],
+          price,
+          qty,
+        },
+      ]);
 
-    const index = items.findIndex((item) => {
-      return item.name === entity;
-    });
-
-    if (index > -1) {
-      const itemNew = items;
-      itemNew.splice(index, 1, {
-        name: entity,
-        size: size?.[`${entity}Size`],
-        price,
-        qty,
+      const index = items.findIndex((item) => {
+        return item.name === entity;
       });
-
-      setItems(itemNew);
+      if (index > -1) {
+        const itemNew = items;
+        itemNew.splice(index, 1, {
+          name: entity,
+          size: size?.[`${entity}Size`],
+          price,
+          qty,
+        });
+        setItems(itemNew);
+      }
     }
   };
 
@@ -236,22 +228,28 @@ function Quotation({ onHide, newdata }) {
   };
 
   const formEdit = () => {
-    if (newdata) {
-      let newsize = {};
+    if (newdata?._id) {
+      // newdata?.items?.map((item) => {
+      //   console.log(229, item.size !== "placeholder");
+      //   if (item.size !== "placeholder") {
+      //     console.log(230, newdata?.items, items);
+      //     setItems([...items, ...newdata?.items]);
+      //     console.log(232, items);
+      //   }
+      // });
 
+      let newsize = {};
       newdata?.items?.map((item) => {
         if (item?.Name !== 'painting') {
           newsize[`${item.name}Size`] = item.size;
           return { [`${item.name}Size`]: item.size };
         }
       });
-
+      console.log(240, newsize);
       setSize(newsize);
-    }
+      console.log(242, size);
 
-    if (newdata?._id) {
       let priceNew = {};
-
       newdata?.items?.map((item) => {
         if (item?.Name !== 'painting') {
           priceNew[`${item.name}`] = item.price;
@@ -262,9 +260,7 @@ function Quotation({ onHide, newdata }) {
       });
 
       setPrice({ ...price, ...priceNew });
-    }
 
-    if (newdata?._id) {
       const paintEdit = newdata?.items?.find((item) => {
         if (item.Name === 'painting') {
           return item?.name;
@@ -274,23 +270,6 @@ function Quotation({ onHide, newdata }) {
     }
   };
 
-  // const sizeEdit = () => {
-  //   if (newdata?.newdata) {
-  //     if (newdata) {
-  //       let newsize = {};
-
-  //       newdata?.items?.map((item) => {
-  //         if (item?.Name !== "painting") {
-  //           newsize[`${item.name}Size`] = item.size;
-  //           return { [`${item.name}Size`]: item.size };
-  //         }
-  //       });
-
-  //       setSize(newsize);
-  //     }
-  //   }
-  // };
-
   const Qty = (entity) => {
     const newQty = newdata?.items?.find((item) => {
       if (item.name === entity) {
@@ -299,42 +278,6 @@ function Quotation({ onHide, newdata }) {
     });
     return newQty?.qty;
   };
-
-  // const Price = () => {
-  //   if (newdata?.newdata) {
-  //     let priceNew = {};
-
-  //     newdata?.items?.map((item) => {
-  //       if (item?.Name !== "painting") {
-  //         priceNew[`${item.name}`] = item.price;
-  //         return { [`${item.name}`]: item.price };
-  //       } else {
-  //         priceNew.sellingRate = item.price;
-  //       }
-  //     });
-
-  //     setPrice(priceNew);
-  //   }
-  // };
-
-  // const PaintingEdit = () => {
-  //   if (newdata?.newdata) {
-  //     const paintEdit = newdata?.items?.find((item) => {
-  //       if (item.Name === "painting") {
-  //         return item?.name;
-  //       }
-  //     });
-  //     return setPaintingName(paintEdit?.name);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (newdata?.newdata) {
-  //     Number(newdata?.total);
-  //     console.log(305, total);
-  //     setTotal(newdata?.total);
-  //   }
-  // }, []);
 
   useEffect(() => {
     formEdit();
@@ -346,15 +289,6 @@ function Quotation({ onHide, newdata }) {
   }, []);
 
   return (
-    // <Modal
-    //   show={show}
-    //   onHide={onHide}
-    //   backdrop='static'
-    //   keyboard={false}
-    //   size='lg'
-    //   fullscreen={true}
-    //   scrollable={true}
-    // >
     <>
       <Modal.Header>
         <Modal.Title>
@@ -425,30 +359,24 @@ function Quotation({ onHide, newdata }) {
                   />
                 </div>
               </div>
-              {/* 
-              <div className='form-row'>
-                <div className='col-md-6'>
-                  <label>Frames</label>
-                </div>
-                <div className='col-md-6'>
-                  <label>Mount</label>
-                </div>
-              </div> */}
+
               <div className='form-row mb-3'>
-                {/* <label style={{ marginBottom: 20 }}>Items</label> */}
-                {/* <div className='form-group col-md-2 mt-3'> */}
-                {/* </div> */}
                 <div className='form-group col-md-3'>
                   <label>Frame (Sizes)</label>
                   <select
                     id='inputState'
                     class='form-control'
+                    searchable={true}
                     onChange={(e) => {
-                      setSize({ ...size, frameSize: e.target.value });
+                      if (e.target.value !== 'placeholder') {
+                        setSize({ ...size, frameSize: e.target.value });
+                      } else {
+                        setSize({ ...size, frameSize: '' });
+                      }
                     }}
                     value={size.frameSize}
                   >
-                    <option>Select Size</option>
+                    <option value='placeholder'>Select Size</option>
                     {record.frameData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.width} * {item.height}
@@ -486,12 +414,7 @@ function Quotation({ onHide, newdata }) {
                   />
                 </div>
                 <div className='form-group col-md-1'></div>
-                {/* </div>
 
-              <div className='form-row'> */}
-                {/* <div className='form-group col-md-4 mt-3'>
-                  <label style={{ margin: '10% 50%' }}>Mount</label>
-                </div> */}
                 <div className='form-group col-md-3'>
                   <label>Mount (Sizes)</label>
                   <select
@@ -502,7 +425,7 @@ function Quotation({ onHide, newdata }) {
                     }}
                     value={size.mountSize}
                   >
-                    <option value='all'>Select Size</option>
+                    <option value='placeholder'>Select Size</option>
                     {record.mountData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.width} * {item.height}
@@ -539,14 +462,6 @@ function Quotation({ onHide, newdata }) {
                 </div>
               </div>
 
-              {/* <div className='form-row'>
-                <div className='form-group col-md-6'>
-                  <label>Glass</label>
-                </div>
-                <div className='form-group col-md-6'>
-                  <label>Hardboard</label>
-                </div>
-              </div> */}
               <div className='form-row mb-3'>
                 <div className='form-group col-md-3'>
                   <label>Glass (Sizes)</label>
@@ -554,12 +469,13 @@ function Quotation({ onHide, newdata }) {
                   <select
                     id='inputState'
                     class='form-control'
+                    searchable={true}
                     onChange={(e) =>
                       setSize({ ...size, glassSize: e.target.value })
                     }
                     value={size.glassSize}
                   >
-                    <option>Select Size</option>
+                    <option value='placeholder'>Select Size</option>
                     {record.glassData?.map((item) => (
                       <option
                         key={item.id}
@@ -600,11 +516,7 @@ function Quotation({ onHide, newdata }) {
                   ></input>
                 </div>
                 <div className='form-group col-md-1'></div>
-                {/* </div>
-              <div className='form-row'> 
-                <div className='form-group col-md-4'>
-                  <label style={{ margin: '10% 50%' }}>Hardboard</label>
-                </div>*/}
+
                 <div className='form-group col-md-3'>
                   <label>Hardboard (Sizes)</label>
 
@@ -619,7 +531,7 @@ function Quotation({ onHide, newdata }) {
                     }
                     value={size.hardboardSize}
                   >
-                    <option>Select...</option>
+                    <option value='placeholder'>Select...</option>
                     {record.hardboardData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         <option>
@@ -658,11 +570,7 @@ function Quotation({ onHide, newdata }) {
                   />
                 </div>
               </div>
-              {/* <div className='form-row'>
-                <div className='form-group col-md-2'>
-                  <label>Painting</label>
-                </div>
-              </div> */}
+
               <div className='form-row mb-2'>
                 <div className='form-group col-md-4'>
                   <label>Painting Name</label>
@@ -712,7 +620,6 @@ function Quotation({ onHide, newdata }) {
                   className='form-control'
                   value={total}
                   disabled
-                  // defaultValue={newdata?.total}
                   placeholder=''
                   required
                 />
@@ -765,7 +672,6 @@ function Quotation({ onHide, newdata }) {
                   className='form-control'
                   value={grandTotal}
                   disabled
-                  // defaultValue={newdata?.grandTotal}
                   required
                 />
               </div>
@@ -776,12 +682,12 @@ function Quotation({ onHide, newdata }) {
       <Modal.Footer>
         <Button
           type='submit'
-          onClick={newdata?.quotationNo ? handleEdit : handleSubmit}
+          onClick={newdata?._id ? handleEdit : handleSubmit}
           size='small'
           variant='contained'
           color='primary'
         >
-          {newdata?.quotationNo ? 'Edit' : 'Add'}
+          {newdata?._id ? 'Edit' : 'Add'}
         </Button>
 
         <Button size='small' variant='outlined' onClick={onHide}>
