@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './Quotation.css';
-import { useNavigate, useLocation } from 'react-router-dom';
-import Modal from 'react-bootstrap/Modal';
-import { Button } from '@material-ui/core';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./Quotation.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
+import { Button } from "@material-ui/core";
 
 function Quotation({ onHide, newdata, setQuotations, quotations }) {
   const [creation, setCreation] = useState([]);
@@ -24,12 +24,12 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
 
   const [quotationNo, setQuotationNo] = useState(newdata?.quotationNo || 0);
   const [date, setDate] = useState();
-  const [customername, setCustomername] = useState(newdata?.customername || '');
+  const [customername, setCustomername] = useState(newdata?.customername || "");
   const [billingaddress, setBillingaddress] = useState(
-    newdata?.billingaddress || ''
+    newdata?.billingaddress || ""
   );
 
-  const [paintingName, setPaintingName] = useState('');
+  const [paintingName, setPaintingName] = useState("");
 
   const [size, setSize] = useState({});
   const [taxOptions, setTaxOptions] = useState(false);
@@ -42,18 +42,18 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
   let addMode = {};
   let editMode = {};
   if (newdata) {
-    addMode.display = 'none';
+    addMode.display = "none";
   } else {
-    editMode.display = 'none';
+    editMode.display = "none";
   }
 
   const handlePostClose = () => {
-    navigate('/quotation');
+    navigate("/quotation");
   };
 
   const FrameData = () => {
     axios
-      .get('http://localhost:4000/getData')
+      .get("http://localhost:4000/getData")
 
       .then((data) => {
         setRecord(data.data);
@@ -66,7 +66,7 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post('http://localhost:4000/quotation', {
+      .post("http://localhost:4000/quotation", {
         quotationNo,
         date,
         customername,
@@ -77,8 +77,9 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
       })
 
       .then((data) => {
+        console.log(80, data);
         setQuotations([data.data.data, ...quotations]);
-
+        console.log(82, quotations);
         onHide();
       })
       .catch((err) => {
@@ -115,10 +116,10 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
     let billingaddress =
       record.creationData.find((item) => {
         return (
-          item.firstname + '' + item.middlename + '' + item.lastname ===
+          item.firstname + "" + item.middlename + "" + item.lastname ===
           customername
         );
-      })?.billingaddress || '';
+      })?.billingaddress || "";
     setBillingaddress(billingaddress);
   };
 
@@ -130,42 +131,60 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
 
     setPrice({ ...price, sellingRate });
 
-    setItems([
-      ...items,
-      {
-        name: paintingName,
-        Name: 'painting',
-        price: sellingRate,
-      },
-    ]);
-    const index = items.findIndex((item) => {
-      return item?.Name === 'painting';
-    });
-    if (index > -1) {
-      const newPaint = items;
-      newPaint.splice(index, 1, {
-        name: paintingName,
-        Name: 'painting',
-        price: sellingRate,
+    // record.paintingData.find((item) => {
+    console.log(134, paintingName);
+    if (paintingName) {
+      setItems([
+        ...items,
+        {
+          name: paintingName,
+          Name: "painting",
+          price: sellingRate,
+        },
+      ]);
+      const index = items.findIndex((item) => {
+        return item?.Name === "painting";
       });
-      setItems(newPaint);
+      if (index > -1) {
+        const newPaint = items;
+        newPaint.splice(index, 1, {
+          name: paintingName,
+          Name: "painting",
+          price: sellingRate,
+        });
+        setItems(newPaint);
+      }
+    } else {
+      const index = items.findIndex((item) => {
+        return item?.Name === "painting";
+      });
+      if (index > -1) {
+        const newPaint = items;
+        newPaint.splice(index, 1);
+        setItems(newPaint);
+      }
     }
+
+    console.log(34, items);
+    // });
   };
 
   const calculate = (qty, entity) => {
+    // if (size[`${entity}Size`]) {
+    const rate =
+      record[`${entity}Data`].find((item) => {
+        return (
+          item.width.toString() + " * " + item.height.toString() ===
+          size[`${entity}Size`]
+        );
+      })?.rate || 0;
+
+    const newprice = qty * rate;
+
+    setPrice({ ...price, [entity]: newprice });
+
+    console.log(1, size[`${entity}Size`]);
     if (size[`${entity}Size`]) {
-      const rate =
-        record[`${entity}Data`].find((item) => {
-          return (
-            item.width.toString() + ' * ' + item.height.toString() ===
-            size[`${entity}Size`]
-          );
-        })?.rate || 0;
-
-      const newprice = qty * rate;
-
-      setPrice({ ...price, [entity]: newprice });
-
       setItems([
         ...items,
         {
@@ -175,6 +194,8 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
           qty,
         },
       ]);
+
+      console.log(180, items);
 
       const index = items.findIndex((item) => {
         return item.name === entity;
@@ -189,8 +210,29 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
         });
         setItems(itemNew);
       }
+    } else {
+      const index = items.findIndex((item) => {
+        return item.name === entity;
+      });
+      if (index > -1) {
+        const itemNew = items;
+        itemNew.splice(index, 1);
+        setItems(itemNew);
+      }
     }
+    console.log(223, items);
   };
+
+  // const selectChange = () => {
+  //   console.log(207, items);
+  //   const setQty = items.map((item) => {
+  //     console.log(209, item.name);
+  //     if (item.name !== "placeholder") {
+  //       console.log(210, item.qty);
+  //       return (item.qty = 0);
+  //     }
+  //   });
+  // };
 
   useEffect(() => {
     const value =
@@ -203,13 +245,14 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
     setTotal(value);
 
     const newItems = items.map((item) => {
-      if (item?.Name !== 'painting') {
+      if (item?.Name !== "painting") {
         return { ...item, price: price[item.name] };
       }
 
       return item;
     });
     setItems(newItems);
+    console.log(235, items);
   }, [price]);
 
   const onwithTax = () => {
@@ -229,18 +272,13 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
 
   const formEdit = () => {
     if (newdata?._id) {
-      // newdata?.items?.map((item) => {
-      //   console.log(229, item.size !== "placeholder");
-      //   if (item.size !== "placeholder") {
-      //     console.log(230, newdata?.items, items);
-      //     setItems([...items, ...newdata?.items]);
-      //     console.log(232, items);
-      //   }
-      // });
+      // console.log(230, newdata?.items, items);
+      // setItems([...items, ...newdata?.items]);
+      // console.log(232, items);
 
       let newsize = {};
       newdata?.items?.map((item) => {
-        if (item?.Name !== 'painting') {
+        if (item?.Name !== "painting") {
           newsize[`${item.name}Size`] = item.size;
           return { [`${item.name}Size`]: item.size };
         }
@@ -251,7 +289,7 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
 
       let priceNew = {};
       newdata?.items?.map((item) => {
-        if (item?.Name !== 'painting') {
+        if (item?.Name !== "painting") {
           priceNew[`${item.name}`] = item.price;
           return { [`${item.name}`]: item.price };
         } else {
@@ -262,11 +300,38 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
       setPrice({ ...price, ...priceNew });
 
       const paintEdit = newdata?.items?.find((item) => {
-        if (item.Name === 'painting') {
+        if (item.Name === "painting") {
           return item?.name;
         }
       });
       return setPaintingName(paintEdit?.name);
+    }
+  };
+
+  const removeSize = (entity) => {
+    const index = items.findIndex((item) => {
+      return item.name === entity;
+    });
+    console.log(316, index);
+    if (index > -1) {
+      console.log(317, items);
+      const itemNew = items;
+      itemNew.splice(index, 1);
+      setItems(itemNew);
+      console.log(307, itemNew);
+    }
+  };
+
+  const removePaint = () => {
+    const index = items.findIndex((item) => {
+      return item?.Name === "painting";
+    });
+    console.log(222, index);
+    if (index > -1) {
+      const newPaint = items;
+      newPaint.splice(index, 1);
+      setItems(newPaint);
+      console.log(444, newPaint);
     }
   };
 
@@ -292,91 +357,94 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
     <>
       <Modal.Header>
         <Modal.Title>
-          {`${newdata?._id ? 'Edit' : 'Add'} Quotation`}
+          {`${newdata?._id ? "Edit" : "Add"} Quotation`}
         </Modal.Title>
       </Modal.Header>
-      <div style={{ height: '600px', position: 'relative' }}>
-        <Modal.Body style={{ maxHeight: '100%', overflow: 'auto' }}>
-          <div className='container' style={newdata ? editMode : addMode}>
-            <div className='Add'>
-              <div className='form-row mt-3 mb-2'>
-                <div className='col-md-3 mb-3'>
+      <div style={{ height: "600px", position: "relative" }}>
+        <Modal.Body style={{ maxHeight: "100%", overflow: "auto" }}>
+          <div className="container" style={newdata ? editMode : addMode}>
+            <div className="Add">
+              <div className="form-row mt-3 mb-2">
+                <div className="col-md-3 mb-3">
                   <label>Quotation No</label>
                   <input
-                    type='text'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    className="form-control"
+                    placeholder=""
                     onChange={(e) => setQuotationNo(e.target.value)}
                     required
                     value={quotationNo}
                   />
                 </div>
-                <div className='col-md-3 mb-3'>
+                <div className="col-md-3 mb-3">
                   <label>Date</label>
                   <input
-                    type='date'
-                    className='form-control'
-                    placeholder=''
+                    type="date"
+                    className="form-control"
+                    placeholder=""
                     onChange={(e) => setDate(e.target.value)}
                     required
                     defaultValue={newdata?.date}
                   />
                 </div>
-                <div className=' col-md-3 mb-3'>
+                <div className=" col-md-3 mb-3">
                   <label>Customer Name</label>
                   <select
-                    id='inputState'
+                    id="inputState"
                     searchable={true}
-                    class='form-control'
+                    class="form-control"
                     onChange={(e) => {
                       setCustomername(e.target.value);
                       setSelected(e.target.value);
                     }}
                     value={customername}
                   >
-                    <option>Select Customer</option>
+                    <option value="">Select Customer</option>
                     {record.creationData?.map((item, index) => (
                       <option key={index} value={item.id}>
                         {item.firstname +
-                          '' +
+                          "" +
                           item.middlename +
-                          '' +
+                          "" +
                           item.lastname}
                       </option>
                     ))}
                   </select>
                 </div>
-                <div className=' col-md-3 mb-3'>
+                <div className=" col-md-3 mb-3">
                   <label>Billing Address</label>
 
                   <input
-                    type='text'
+                    type="text"
                     value={billingaddress}
-                    className='form-control'
-                    placeholder=''
+                    className="form-control"
+                    placeholder=""
                     disabled
                     required
                   />
                 </div>
               </div>
 
-              <div className='form-row mb-3'>
-                <div className='form-group col-md-3'>
+              <div className="form-row mb-3">
+                <div className="form-group col-md-3">
                   <label>Frame (Sizes)</label>
                   <select
-                    id='inputState'
-                    class='form-control'
+                    id="inputState"
+                    class="form-control"
                     searchable={true}
                     onChange={(e) => {
-                      if (e.target.value !== 'placeholder') {
+                      setSize(e.target.value);
+                      if (e.target.value !== "Select...") {
+                        console.log(11, "value in", e.target);
                         setSize({ ...size, frameSize: e.target.value });
                       } else {
-                        setSize({ ...size, frameSize: '' });
+                        console.log(11, "no value");
+                        removeSize();
                       }
                     }}
                     value={size.frameSize}
                   >
-                    <option value='placeholder'>Select Size</option>
+                    <option defaultValue>Select...</option>
                     {record.frameData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.width} * {item.height}
@@ -384,48 +452,61 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                     ))}
                   </select>
                 </div>
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Qty</label>
                   <input
-                    type='text'
-                    name='qty'
-                    id='qty'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    name="qty"
+                    id="qty"
+                    className="form-control"
+                    placeholder=""
                     required
                     onChange={(e) => {
-                      calculate(e.target.value, 'frame');
+                      if (e.target.value !== "Select...") {
+                        calculate(e.target.value, "frame");
+                      } else {
+                        console.log(11, "no value");
+                        removeSize();
+                      }
                     }}
-                    defaultValue={Qty('frame')}
+                    defaultValue={Qty("frame")}
                   />
                 </div>
 
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Price</label>
                   <input
-                    type='text'
-                    name='price.frame'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    name="price.frame"
+                    className="form-control"
+                    placeholder=""
                     required
                     disabled
                     value={price.frame}
                     defaultValue={price.frame}
                   />
                 </div>
-                <div className='form-group col-md-1'></div>
+                <div className="form-group col-md-1"></div>
 
-                <div className='form-group col-md-3'>
+                <div className="form-group col-md-3">
                   <label>Mount (Sizes)</label>
                   <select
-                    id='inputState'
-                    class='form-control'
+                    id="inputState"
+                    class="form-control"
                     onChange={(e) => {
-                      setSize({ ...size, mountSize: e.target.value });
+                      setSize(e.target.value);
+                      if (e.target.value !== "Select...") {
+                        console.log(11, "value in", e.target);
+                        setSize({ ...size, mountSize: e.target.value });
+                      } else {
+                        console.log(11, "no value");
+                        removeSize();
+                      }
+                      // setSize({ ...size, mountSize: e.target.value });
                     }}
                     value={size.mountSize}
                   >
-                    <option value='placeholder'>Select Size</option>
+                    <option defaultValue>Select...</option>
                     {record.mountData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.width} * {item.height}
@@ -433,27 +514,27 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                     ))}
                   </select>
                 </div>
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Qty</label>
                   <input
-                    type='text'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    className="form-control"
+                    placeholder=""
                     required
                     onChange={(e) => {
-                      calculate(e.target.value, 'mount');
+                      calculate(e.target.value, "mount");
                     }}
-                    defaultValue={Qty('mount')}
+                    defaultValue={Qty("mount")}
                   />
                 </div>
 
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Price</label>
                   <input
-                    type='text'
-                    name='price.mount'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    name="price.mount"
+                    className="form-control"
+                    placeholder=""
                     value={price.mount}
                     defaultValue={price.mount}
                     disabled
@@ -462,20 +543,30 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                 </div>
               </div>
 
-              <div className='form-row mb-3'>
-                <div className='form-group col-md-3'>
+              <div className="form-row mb-3">
+                <div className="form-group col-md-3">
                   <label>Glass (Sizes)</label>
 
                   <select
-                    id='inputState'
-                    class='form-control'
+                    id="inputState"
+                    class="form-control"
                     searchable={true}
-                    onChange={(e) =>
-                      setSize({ ...size, glassSize: e.target.value })
+                    onChange={
+                      (e) => {
+                        setSize(e.target.value);
+                        if (e.target.value !== "Select...") {
+                          console.log(11, "value in", e.target);
+                          setSize({ ...size, glassSize: e.target.value });
+                        } else {
+                          console.log(11, "no value");
+                          removeSize();
+                        }
+                      }
+                      // setSize({ ...size, glassSize: e.target.value })
                     }
                     value={size.glassSize}
                   >
-                    <option value='placeholder'>Select Size</option>
+                    <option defaultValue>Select...</option>
                     {record.glassData?.map((item) => (
                       <option
                         key={item.id}
@@ -487,51 +578,61 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                     ))}
                   </select>
                 </div>
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Qty</label>
                   <input
-                    type='text'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    className="form-control"
+                    placeholder=""
                     required
                     onChange={(e) => {
-                      calculate(e.target.value, 'glass');
+                      calculate(e.target.value, "glass");
                     }}
-                    defaultValue={Qty('glass')}
+                    defaultValue={Qty("glass")}
                   />
                 </div>
 
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Price</label>
 
                   <input
-                    type='text'
-                    name='price.glass'
+                    type="text"
+                    name="price.glass"
                     value={price.glass}
                     defaultValue={price.glass}
-                    className='form-control'
-                    placeholder=''
+                    className="form-control"
+                    placeholder=""
                     disabled
                     required
                   ></input>
                 </div>
-                <div className='form-group col-md-1'></div>
+                <div className="form-group col-md-1"></div>
 
-                <div className='form-group col-md-3'>
+                <div className="form-group col-md-3">
                   <label>Hardboard (Sizes)</label>
 
                   <select
-                    id='inputState'
-                    class='form-control'
-                    onChange={(e) =>
-                      setSize({
-                        ...size,
-                        hardboardSize: e.target.value,
-                      })
+                    id="inputState"
+                    class="form-control"
+                    onChange={
+                      (e) => {
+                        setSize(e.target.value);
+                        if (e.target.value !== "Select...") {
+                          console.log(11, "value in", e.target);
+                          setSize({ ...size, hardboardSize: e.target.value });
+                        } else {
+                          console.log(11, "no value");
+                          removeSize();
+                        }
+                      }
+                      // setSize({
+                      //   ...size,
+                      //   hardboardSize: e.target.value,
+                      // })
                     }
                     value={size.hardboardSize}
                   >
-                    <option value='placeholder'>Select...</option>
+                    <option defaultValue>Select...</option>
                     {record.hardboardData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         <option>
@@ -541,49 +642,58 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                     ))}
                   </select>
                 </div>
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Qty</label>
                   <input
-                    type='text'
-                    name='qty'
-                    className='form-control'
-                    placeholder=''
+                    type="text"
+                    name="qty"
+                    className="form-control"
+                    placeholder=""
                     onChange={(e) => {
-                      calculate(e.target.value, 'hardboard');
+                      calculate(e.target.value, "hardboard");
                     }}
-                    defaultValue={Qty('hardboard')}
+                    defaultValue={Qty("hardboard")}
                     required
                   />
                 </div>
 
-                <div className='form-group col-md-1'>
+                <div className="form-group col-md-1">
                   <label>Price</label>
                   <input
-                    type='price'
-                    name='price.hardboard'
+                    type="price"
+                    name="price.hardboard"
                     value={price.hardboard}
                     defaultValue={price.hardboard}
-                    className='form-control'
-                    placeholder=''
+                    className="form-control"
+                    placeholder=""
                     disabled
                     required
                   />
                 </div>
               </div>
 
-              <div className='form-row mb-2'>
-                <div className='form-group col-md-4'>
+              <div className="form-row mb-2">
+                <div className="form-group col-md-4">
                   <label>Painting Name</label>
                   <select
-                    id='inputState'
-                    class='form-control'
+                    id="inputState"
+                    class="form-control"
                     onChange={(e) => {
                       setPaintingName(e.target.value);
-                      setPaint(e.target.value);
+                      if (e.target.value !== "Select...") {
+                        // if (e.target.value !== "select") {
+                        console.log(111, "value in", e.target);
+                        setPaint(e.target.value);
+                      } else {
+                        console.log(111, "no value");
+                        removePaint();
+                      }
                     }}
                     value={paintingName}
                   >
-                    <option>Select...</option>
+                    <option id="select" defaultValue>
+                      Select...
+                    </option>
                     {record.paintingData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         <option>{item.paintingName}</option>
@@ -592,14 +702,14 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                   </select>
                 </div>
 
-                <div className='form-group col-md-4'>
+                <div className="form-group col-md-4">
                   <label>Selling Rate</label>
                   <input
-                    type='price'
+                    type="price"
                     value={price.sellingRate}
                     defaultValue={price.sellingRate}
-                    className='form-control'
-                    placeholder=''
+                    className="form-control"
+                    placeholder=""
                     disabled
                     required
                   />
@@ -607,52 +717,52 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
               </div>
             </div>
 
-            <div className='form-row'>
-              <div className='col-md-6'>
+            <div className="form-row">
+              <div className="col-md-6">
                 <label>Total</label>
               </div>
-              <div className='col-md-6'>
+              <div className="col-md-6">
                 <label style={{ marginRight: 20 }}>Tax</label>
               </div>
-              <div className='form-group col-md-5'>
+              <div className="form-group col-md-5">
                 <input
-                  type='text'
-                  className='form-control'
+                  type="text"
+                  className="form-control"
                   value={total}
                   disabled
-                  placeholder=''
+                  placeholder=""
                   required
                 />
               </div>
-              <div className='form-group col-md-1'></div>
-              <div className='form-group col-md-3 mb-3'>
+              <div className="form-group col-md-1"></div>
+              <div className="form-group col-md-3 mb-3">
                 <div>
                   <input
-                    type='radio'
-                    id='withTax'
+                    type="radio"
+                    id="withTax"
                     onClick={onwithTax}
-                    value='WithTax'
-                    name='tax'
+                    value="WithTax"
+                    name="tax"
                   />
-                   {' '}
-                  <label for='withTax' style={{ paddingRight: 10 }}>
+                   {" "}
+                  <label for="withTax" style={{ paddingRight: 10 }}>
                     With Tax
                   </label>
                    
                   <input
-                    type='radio'
-                    id='withoutTax'
+                    type="radio"
+                    id="withoutTax"
                     onClick={onwithoutTax}
-                    name='tax'
-                    style={{ paddingLeft: '10px' }}
+                    name="tax"
+                    style={{ paddingLeft: "10px" }}
                   />
-                    <label for='withoutTax'>Without Tax</label>
+                    <label for="withoutTax">Without Tax</label>
                 </div>
               </div>
-              <div className='form-group col-md-3 mb-3'>
+              <div className="form-group col-md-3 mb-3">
                 <select
-                  id='inputState'
-                  class='form-control'
+                  id="inputState"
+                  class="form-control"
                   onChange={(e) => setWithTax(e.target.value)}
                   disabled={taxOptions}
                 >
@@ -665,11 +775,11 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                 </select>
               </div>
 
-              <div className='form-group col-md-5 mb-3'>
+              <div className="form-group col-md-5 mb-3">
                 <label>Grand Total</label>
                 <input
-                  type='text'
-                  className='form-control'
+                  type="text"
+                  className="form-control"
                   value={grandTotal}
                   disabled
                   required
@@ -681,16 +791,16 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
       </div>
       <Modal.Footer>
         <Button
-          type='submit'
+          type="submit"
           onClick={newdata?._id ? handleEdit : handleSubmit}
-          size='small'
-          variant='contained'
-          color='primary'
+          size="small"
+          variant="contained"
+          color="primary"
         >
-          {newdata?._id ? 'Edit' : 'Add'}
+          {newdata?._id ? "Edit" : "Add"}
         </Button>
 
-        <Button size='small' variant='outlined' onClick={onHide}>
+        <Button size="small" variant="outlined" onClick={onHide}>
           Close
         </Button>
       </Modal.Footer>
