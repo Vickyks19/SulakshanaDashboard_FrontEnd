@@ -128,7 +128,7 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
       record.paintingData.find((item) => {
         return item.paintingName === paintingName;
       })?.sellingRate || 0;
-
+    console.log(131, sellingRate);
     setPrice({ ...price, sellingRate });
 
     // record.paintingData.find((item) => {
@@ -680,8 +680,8 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                     class="form-control"
                     onChange={(e) => {
                       setPaintingName(e.target.value);
+                      setPaint(e.target.value);
                       if (e.target.value !== "Select...") {
-                        // if (e.target.value !== "select") {
                         console.log(111, "value in", e.target);
                         setPaint(e.target.value);
                       } else {
@@ -691,9 +691,7 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
                     }}
                     value={paintingName}
                   >
-                    <option id="select" defaultValue>
-                      Select...
-                    </option>
+                    <option defaultValue>Select...</option>
                     {record.paintingData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         <option>{item.paintingName}</option>

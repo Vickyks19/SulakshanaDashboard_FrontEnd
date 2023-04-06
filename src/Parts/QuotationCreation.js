@@ -68,6 +68,7 @@ function QuotationCreation() {
   };
 
   const handleDelete = (id) => {
+    console.log(71, id);
     axios
       .delete(`http://localhost:4000/quotationData/${id}`)
       .then((res) => {

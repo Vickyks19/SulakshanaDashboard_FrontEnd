@@ -18,28 +18,27 @@ const styles = StyleSheet.create({
   label: { width: "20%", fontSize: 10 },
   value: { fontSize: 10, fontFamily: "Helvetica-Bold" },
 });
-
-function InvoiceNo({ invoiceNew }) {
-  console.log(4, invoiceNew);
+function InvoiceGenNo({ invoiceGenNew }) {
+  console.log(22, invoiceGenNew);
   return (
     <View style={styles.container}>
       <View style={styles.keyValue}>
         <Text style={styles.label}>Invoice No</Text>
         <Text>: </Text>
-        <Text style={styles.value}>{invoiceNew?.quotationNo}</Text>
+        <Text style={styles.value}>{invoiceGenNew?.quotationNo}</Text>
       </View>
       <View style={styles.keyValue}>
         <Text style={styles.label}>Date</Text>
         <Text>: </Text>
         <Text style={styles.value}>
-          {dayjs(invoiceNew?.date).format("DD/MM/YYYY")}
+          {dayjs(invoiceGenNew?.date).format("DD/MM/YYYY")}
         </Text>
       </View>
       <View style={styles.keyValue}>
         <Text style={styles.label}>Due Date</Text>
         <Text>: </Text>
         <Text style={styles.value}>
-          {dayjs(invoiceNew?.date).format("DD/MM/YYYY")}
+          {dayjs(invoiceGenNew?.date).format("DD/MM/YYYY")}
         </Text>
       </View>
       <View style={styles.keyValue}>
@@ -56,4 +55,4 @@ function InvoiceNo({ invoiceNew }) {
   );
 }
 
-export default InvoiceNo;
+export default InvoiceGenNo;

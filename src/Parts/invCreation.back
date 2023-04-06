@@ -5,11 +5,11 @@ import Modal from "react-bootstrap/Modal";
 import { Button, Modal as MUIModal } from "@material-ui/core";
 import { styled } from "@mui/material";
 function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
-  // console.log(2, invdata, invoices);
+  // console.log(2, invdata);
   const [creation, setCreation] = useState([]);
   const [record, setRecord] = useState({});
-  const [invoNew, setInvoNew] = useState({});
-  console.log(15, invoNew);
+  const [invoNew, setInvoNew] = useState([]);
+
   const [price, setPrice] = useState({
     frame: 0,
     mount: 0,
@@ -224,10 +224,9 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
         setInvoices(newFrames);
         console.log(233, newFrames);
 
-        const invoiceEditNew = newFrames.find((item) => item._id === id);
-        console.log(12, invoiceEditNew);
-        setInvoNew(invoiceEditNew);
-        console.log();
+        // const invoNew = newFrames.find((item) => item._id === id);
+        // console.log(12, invoNew);
+        // setInvoNew(invoNew);
         onHide();
       })
       .catch((err) => {
@@ -755,7 +754,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
           onClick={() => {
             handleEdit();
           }}
-          invoiceData={invoNew}
+          // invoNew={invoNew}
           size="small"
           variant="contained"
           color="primary"

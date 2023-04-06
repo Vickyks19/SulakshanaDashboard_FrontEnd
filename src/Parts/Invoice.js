@@ -8,14 +8,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import Modal from "react-bootstrap/Modal";
 import { useNavigate } from "react-router-dom";
 import InvoiceCreation from "./InvoiceCreation";
+import InvoiceGenerate from "./InvoiceGenerate/InvoiceGenerate";
 
-function Invoice() {
+function Invoice({ invoiceData, onOpen }) {
+  console.log(100, invoiceData);
+
   const [invoices, setInvoices] = useState([]);
-
+  console.log(14, invoices);
   const [filterInvoice, setFilterInvoice] = useState({});
   console.log(2, filterInvoice);
 
   const [newDataInv, setNewDataInv] = useState({});
+  console.log(3, newDataInv);
   let navigate = useNavigate();
 
   const [viewPost, setPostShow] = useState(false);
@@ -26,6 +30,7 @@ function Invoice() {
   const [view, setViewShow] = useState(false);
 
   const [id, setId] = useState("");
+  console.log(29, invoices?._id);
 
   const EditInvoice = () => {
     setNewDataInv({});
@@ -59,6 +64,19 @@ function Invoice() {
     let filteredInv = invoices.find((item) => item._id === id);
     setNewDataInv(filteredInv);
     handlePostShow();
+  };
+
+  const handleDelete = (id) => {
+    console.log(66, id);
+    axios
+      .delete(`http://localhost:4000/invoiceData/${id}`)
+      .then((res) => {
+        const newInv = invoices.filter((e) => e._id !== id);
+        setInvoices(newInv);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -141,7 +159,12 @@ function Invoice() {
                                     />
                                   </IconButton>
 
-                                  <IconButton size="small">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => {
+                                      handleDelete(item._id);
+                                    }}
+                                  >
                                     <DeleteIcon
                                       style={{ color: "#f03939" }}
                                       fontSize="small"
@@ -185,6 +208,13 @@ function Invoice() {
           setInvoices={setInvoices}
         />
       </Modal>
+
+      {/* <MUIModal open={onOpen}>
+        <InvoiceGenerate
+          invoiceGenNew={invoNew}
+          onClose={() => setViewShow(false)}
+        />
+      </MUIModal> */}
     </>
   );
 }
