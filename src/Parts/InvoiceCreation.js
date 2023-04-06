@@ -32,6 +32,8 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
   const [size, setSize] = useState({});
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
+  const [taxOptions, setTaxOptions] = useState(false);
+
   const [tax, setTax] = useState(0);
   const [grandTotal, setgrandToatal] = useState(invdata?.grandTotal || 0);
   const [id, setId] = useState("");
@@ -79,28 +81,39 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
 
     setPrice({ ...price, sellingRate });
 
-    setItems([
-      ...items,
-      {
-        name: paintingName,
-        Name: "painting",
-        price: sellingRate,
-        test: sellingRate,
-      },
-    ]);
-
-    const index = items.findIndex((item) => {
-      return item?.Name === "painting";
-    });
-    if (index > -1) {
-      const newPaint = items;
-      newPaint.splice(index, 1, {
-        name: paintingName,
-        Name: "painting",
-        price: sellingRate,
+    if (paintingName) {
+      setItems([
+        ...items,
+        {
+          name: paintingName,
+          Name: "painting",
+          price: sellingRate,
+        },
+      ]);
+      const index = items.findIndex((item) => {
+        return item?.Name === "painting";
       });
-      setItems(newPaint);
+      if (index > -1) {
+        const newPaint = items;
+        newPaint.splice(index, 1, {
+          name: paintingName,
+          Name: "painting",
+          price: sellingRate,
+        });
+        setItems(newPaint);
+      }
+    } else {
+      const index = items.findIndex((item) => {
+        return item?.Name === "painting";
+      });
+      if (index > -1) {
+        const newPaint = items;
+        newPaint.splice(index, 1);
+        setItems(newPaint);
+      }
     }
+
+    console.log(34, items);
   };
 
   const calculate = (qty, entity) => {
@@ -116,31 +129,43 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
 
     setPrice({ ...price, [entity]: newprice });
 
-    setItems([
-      ...items,
-      {
-        name: entity,
-        size: size?.[`${entity}Size`],
-        price,
-        qty,
-      },
-    ]);
+    if (size[`${entity}Size`]) {
+      setItems([
+        ...items,
+        {
+          name: entity,
+          size: size?.[`${entity}Size`],
+          price,
+          qty,
+        },
+      ]);
 
-    const index = items.findIndex((item) => {
-      return item.name === entity;
-    });
+      console.log(180, items);
 
-    if (index > -1) {
-      const itemNew = items;
-      itemNew.splice(index, 1, {
-        name: entity,
-        size: size?.[`${entity}Size`],
-        price,
-        qty,
+      const index = items.findIndex((item) => {
+        return item.name === entity;
       });
-
-      setItems(itemNew);
+      if (index > -1) {
+        const itemNew = items;
+        itemNew.splice(index, 1, {
+          name: entity,
+          size: size?.[`${entity}Size`],
+          price,
+          qty,
+        });
+        setItems(itemNew);
+      }
+    } else {
+      const index = items.findIndex((item) => {
+        return item.name === entity;
+      });
+      if (index > -1) {
+        const itemNew = items;
+        itemNew.splice(index, 1);
+        setItems(itemNew);
+      }
     }
+    console.log(223, items);
   };
 
   useEffect(() => {
@@ -176,6 +201,33 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
     setgrandToatal(grandTotal);
   };
 
+  const removeSize = (entity) => {
+    const index = items.findIndex((item) => {
+      return item.name === entity;
+    });
+    console.log(316, index);
+    if (index > -1) {
+      console.log(317, items);
+      const itemNew = items;
+      itemNew.splice(index, 1);
+      setItems(itemNew);
+      console.log(307, itemNew);
+    }
+  };
+
+  const removePaint = () => {
+    const index = items.findIndex((item) => {
+      return item?.Name === "painting";
+    });
+    console.log(222, index);
+    if (index > -1) {
+      const newPaint = items;
+      newPaint.splice(index, 1);
+      setItems(newPaint);
+      console.log(444, newPaint);
+    }
+  };
+
   const handleEdit = () => {
     axios
       .put(`http://localhost:4000/invoiceData/${invdata?._id}`, {
@@ -204,6 +256,9 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
 
   const formEdit = () => {
     if (invdata) {
+      setItems([...items, ...invdata?.items]);
+      console.log(232, items);
+
       let newsize = {};
 
       invdata?.items?.map((item) => {
@@ -302,7 +357,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     }}
                     value={customername}
                   >
-                    <option>Select Size</option>
+                    <option value="">Select Customer</option>
                     {record.creationData?.map((item, index) => (
                       <option key={index} value={item.id}>
                         {item.firstname +
@@ -322,34 +377,32 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     value={billingaddress}
                     className="form-control"
                     placeholder=""
+                    disabled
                     required
                   />
                 </div>
               </div>
-              {/* 
-              <div className='form-row'>
-                <div className='col-md-6'>
-                  <label>Frames</label>
-                </div>
-                <div className='col-md-6'>
-                  <label>Mount</label>
-                </div>
-              </div> */}
+
               <div className="form-row mb-3">
-                {/* <label style={{ marginBottom: 20 }}>Items</label> */}
-                {/* <div className='form-group col-md-2 mt-3'> */}
-                {/* </div> */}
                 <div className="form-group col-md-3">
                   <label>Frame (Sizes)</label>
                   <select
                     id="inputState"
                     class="form-control"
+                    searchable={true}
                     onChange={(e) => {
-                      setSize({ ...size, frameSize: e.target.value });
+                      setSize(e.target.value);
+                      if (e.target.value !== "Select...") {
+                        console.log(11, "value in", e.target);
+                        setSize({ ...size, frameSize: e.target.value });
+                      } else {
+                        console.log(11, "no value");
+                        removeSize();
+                      }
                     }}
                     value={size.frameSize}
                   >
-                    <option>Select Size</option>
+                    <option defaultValue>Select...</option>
                     {record.frameData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.width} * {item.height}
@@ -367,7 +420,12 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     placeholder=""
                     required
                     onChange={(e) => {
-                      calculate(e.target.value, "frame");
+                      if (e.target.value !== "Select...") {
+                        calculate(e.target.value, "frame");
+                      } else {
+                        console.log(11, "no value");
+                        removeSize();
+                      }
                     }}
                     defaultValue={Qty("frame")}
                   />
@@ -381,28 +439,32 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     className="form-control"
                     placeholder=""
                     required
+                    disabled
                     value={price.frame}
                     defaultValue={price.frame}
                   />
                 </div>
                 <div className="form-group col-md-1"></div>
-                {/* </div>
 
-              <div className='form-row'> */}
-                {/* <div className='form-group col-md-4 mt-3'>
-                  <label style={{ margin: '10% 50%' }}>Mount</label>
-                </div> */}
                 <div className="form-group col-md-3">
                   <label>Mount (Sizes)</label>
                   <select
                     id="inputState"
                     class="form-control"
                     onChange={(e) => {
-                      setSize({ ...size, mountSize: e.target.value });
+                      setSize(e.target.value);
+                      if (e.target.value !== "Select...") {
+                        console.log(11, "value in", e.target);
+                        setSize({ ...size, mountSize: e.target.value });
+                      } else {
+                        console.log(11, "no value");
+                        removeSize();
+                      }
+                      // setSize({ ...size, mountSize: e.target.value });
                     }}
                     value={size.mountSize}
                   >
-                    <option value="all">Select Size</option>
+                    <option defaultValue>Select...</option>
                     {record.mountData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         {item.width} * {item.height}
@@ -433,19 +495,12 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     placeholder=""
                     value={price.mount}
                     defaultValue={price.mount}
+                    disabled
                     required
                   />
                 </div>
               </div>
 
-              {/* <div className='form-row'>
-                <div className='form-group col-md-6'>
-                  <label>Glass</label>
-                </div>
-                <div className='form-group col-md-6'>
-                  <label>Hardboard</label>
-                </div>
-              </div> */}
               <div className="form-row mb-3">
                 <div className="form-group col-md-3">
                   <label>Glass (Sizes)</label>
@@ -453,12 +508,23 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                   <select
                     id="inputState"
                     class="form-control"
-                    onChange={(e) =>
-                      setSize({ ...size, glassSize: e.target.value })
+                    searchable={true}
+                    onChange={
+                      (e) => {
+                        setSize(e.target.value);
+                        if (e.target.value !== "Select...") {
+                          console.log(11, "value in", e.target);
+                          setSize({ ...size, glassSize: e.target.value });
+                        } else {
+                          console.log(11, "no value");
+                          removeSize();
+                        }
+                      }
+                      // setSize({ ...size, glassSize: e.target.value })
                     }
                     value={size.glassSize}
                   >
-                    <option>Select Size</option>
+                    <option defaultValue>Select...</option>
                     {record.glassData?.map((item) => (
                       <option
                         key={item.id}
@@ -494,30 +560,37 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     defaultValue={price.glass}
                     className="form-control"
                     placeholder=""
+                    disabled
                     required
                   ></input>
                 </div>
                 <div className="form-group col-md-1"></div>
-                {/* </div>
-              <div className='form-row'> 
-                <div className='form-group col-md-4'>
-                  <label style={{ margin: '10% 50%' }}>Hardboard</label>
-                </div>*/}
+
                 <div className="form-group col-md-3">
                   <label>Hardboard (Sizes)</label>
 
                   <select
                     id="inputState"
                     class="form-control"
-                    onChange={(e) =>
-                      setSize({
-                        ...size,
-                        hardboardSize: e.target.value,
-                      })
+                    onChange={
+                      (e) => {
+                        setSize(e.target.value);
+                        if (e.target.value !== "Select...") {
+                          console.log(11, "value in", e.target);
+                          setSize({ ...size, hardboardSize: e.target.value });
+                        } else {
+                          console.log(11, "no value");
+                          removeSize();
+                        }
+                      }
+                      // setSize({
+                      //   ...size,
+                      //   hardboardSize: e.target.value,
+                      // })
                     }
                     value={size.hardboardSize}
                   >
-                    <option>Select...</option>
+                    <option defaultValue>Select...</option>
                     {record.hardboardData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         <option>
@@ -551,15 +624,12 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     defaultValue={price.hardboard}
                     className="form-control"
                     placeholder=""
+                    disabled
                     required
                   />
                 </div>
               </div>
-              {/* <div className='form-row'>
-                <div className='form-group col-md-2'>
-                  <label>Painting</label>
-                </div>
-              </div> */}
+
               <div className="form-row mb-2">
                 <div className="form-group col-md-4">
                   <label>Painting Name</label>
@@ -568,11 +638,20 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     class="form-control"
                     onChange={(e) => {
                       setPaintingName(e.target.value);
-                      setPaint(e.target.value);
+                      if (e.target.value !== "Select...") {
+                        // if (e.target.value !== "select") {
+                        console.log(111, "value in", e.target);
+                        setPaint(e.target.value);
+                      } else {
+                        console.log(111, "no value");
+                        removePaint();
+                      }
                     }}
                     value={paintingName}
                   >
-                    <option>Select...</option>
+                    <option id="select" defaultValue>
+                      Select...
+                    </option>
                     {record.paintingData?.map((item) => (
                       <option key={item.id} value={item.id}>
                         <option>{item.paintingName}</option>
@@ -589,6 +668,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                     defaultValue={price.sellingRate}
                     className="form-control"
                     placeholder=""
+                    disabled
                     required
                   />
                 </div>
@@ -607,7 +687,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                   type="text"
                   className="form-control"
                   value={total}
-                  // defaultValue={newdata?.total}
+                  disabled
                   placeholder=""
                   required
                 />
@@ -642,6 +722,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                   id="inputState"
                   class="form-control"
                   onChange={(e) => setWithTax(e.target.value)}
+                  disabled={taxOptions}
                 >
                   <option>Select...</option>
                   {record.taxData?.map((item) => (
@@ -658,7 +739,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
                   type="text"
                   className="form-control"
                   value={grandTotal}
-                  // defaultValue={newdata?.grandTotal}
+                  disabled
                   required
                 />
               </div>

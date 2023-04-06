@@ -272,9 +272,9 @@ function Quotation({ onHide, newdata, setQuotations, quotations }) {
 
   const formEdit = () => {
     if (newdata?._id) {
-      // console.log(230, newdata?.items, items);
-      // setItems([...items, ...newdata?.items]);
-      // console.log(232, items);
+      console.log(230, newdata?.items, items);
+      setItems([...items, ...newdata?.items]);
+      console.log(232, items);
 
       let newsize = {};
       newdata?.items?.map((item) => {
