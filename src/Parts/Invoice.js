@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import InvoiceCreation from "./InvoiceCreation";
 import InvoiceGenerate from "./InvoiceGenerate/InvoiceGenerate";
 
-function Invoice({ invoiceData, onOpen }) {
-  console.log(100, invoiceData);
+function Invoice({ invoNew, onOpen }) {
+  console.log(100, invoNew);
 
   const [invoices, setInvoices] = useState([]);
   console.log(14, invoices);

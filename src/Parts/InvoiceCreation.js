@@ -755,7 +755,7 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
           onClick={() => {
             handleEdit();
           }}
-          invoiceData={invoNew}
+          // invoNew={invoNew}
           size="small"
           variant="contained"
           color="primary"
