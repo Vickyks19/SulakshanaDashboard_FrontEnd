@@ -10,17 +10,18 @@ import { useNavigate } from "react-router-dom";
 import InvoiceCreation from "./InvoiceCreation";
 import InvoiceGenerate from "./InvoiceGenerate/InvoiceGenerate";
 
-function Invoice({ invoNew, onOpen }) {
-  console.log(100, invoNew);
-
+function Invoice() {
   const [invoices, setInvoices] = useState([]);
   console.log(14, invoices);
   const [filterInvoice, setFilterInvoice] = useState({});
   console.log(2, filterInvoice);
+  const [invoNew, setInvoNew] = useState({});
+  console.log(15, invoNew);
 
   const [newDataInv, setNewDataInv] = useState({});
   console.log(3, newDataInv);
   let navigate = useNavigate();
+  const [data, setData] = useState({});
 
   const [viewPost, setPostShow] = useState(false);
   const handlePostShow = () => {
@@ -28,6 +29,8 @@ function Invoice({ invoNew, onOpen }) {
   };
 
   const [view, setViewShow] = useState(false);
+
+  const [viewGen, setViewShowGen] = useState(false);
 
   const [id, setId] = useState("");
   console.log(29, invoices?._id);
@@ -55,8 +58,17 @@ function Invoice({ invoNew, onOpen }) {
     console.log(3, filterInvoice);
   };
 
+  const handleGenerate = (invoiceEditNew) => {
+    console.log(58, invoiceEditNew);
+    setInvoNew(invoiceEditNew);
+  };
+
   const togglePopup = () => {
     setViewShow(!view);
+  };
+
+  const togglePopupGen = (onHide) => {
+    setViewShowGen(!viewGen);
   };
 
   const captureEdit = (id) => {
@@ -206,15 +218,17 @@ function Invoice({ invoNew, onOpen }) {
           invdata={newDataInv}
           invoices={invoices}
           setInvoices={setInvoices}
+          handleGenerate={handleGenerate}
+          togglePopupGen={togglePopupGen}
         />
       </Modal>
 
-      {/* <MUIModal open={onOpen}>
+      <MUIModal open={viewGen}>
         <InvoiceGenerate
           invoiceGenNew={invoNew}
-          onClose={() => setViewShow(false)}
+          onClose={() => setViewShowGen(false)}
         />
-      </MUIModal> */}
+      </MUIModal>
     </>
   );
 }

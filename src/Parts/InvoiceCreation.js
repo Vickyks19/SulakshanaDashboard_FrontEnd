@@ -4,12 +4,17 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import { Button, Modal as MUIModal } from "@material-ui/core";
 import { styled } from "@mui/material";
-function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
+function InvoiceCreation({
+  onHide,
+  invdata,
+  setInvoices,
+  invoices,
+  handleGenerate,
+  togglePopupGen,
+}) {
   // console.log(2, invdata, invoices);
-  const [creation, setCreation] = useState([]);
+  // const [creation, setCreation] = useState([]);
   const [record, setRecord] = useState({});
-  const [invoNew, setInvoNew] = useState({});
-  console.log(15, invoNew);
   const [price, setPrice] = useState({
     frame: 0,
     mount: 0,
@@ -17,6 +22,12 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
     hardboard: 0,
     sellingRate: 0,
   });
+
+  const employee = {
+    id: 1,
+    name: "Bobby Hadz",
+    salary: 500,
+  };
 
   const [withTax, setWithTax] = useState(false);
   let navigate = useNavigate();
@@ -226,9 +237,11 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
 
         const invoiceEditNew = newFrames.find((item) => item._id === id);
         console.log(12, invoiceEditNew);
-        setInvoNew(invoiceEditNew);
-        console.log();
+        handleGenerate(invoiceEditNew);
+
         onHide();
+        // togglePopupGen(onHide);
+        togglePopupGen();
       })
       .catch((err) => {
         console.log(err);
@@ -755,13 +768,9 @@ function InvoiceCreation({ onHide, invdata, setInvoices, invoices }) {
           onClick={() => {
             handleEdit();
           }}
-          // invoNew={invoNew}
           size="small"
           variant="contained"
           color="primary"
-          // onOpen={() => {
-          //   togglePopup();
-          // }}
         >
           Generate
         </Button>

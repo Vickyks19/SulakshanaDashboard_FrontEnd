@@ -25,7 +25,7 @@ function QuotationNo({ quotationNew }) {
       <View style={styles.keyValue}>
         <Text style={styles.label}>Quotation No</Text>
         <Text>: </Text>
-        <Text style={styles.value}>{quotationNew?.quotationNo}</Text>
+        <Text style={styles.value}>quo000No{quotationNew?.quotationNo}</Text>
       </View>
       <View style={styles.keyValue}>
         <Text style={styles.label}>Date</Text>

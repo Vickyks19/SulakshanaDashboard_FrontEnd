@@ -25,7 +25,7 @@ function InvoiceGenNo({ invoiceGenNew }) {
       <View style={styles.keyValue}>
         <Text style={styles.label}>Invoice No</Text>
         <Text>: </Text>
-        <Text style={styles.value}>{invoiceGenNew?.quotationNo}</Text>
+        <Text style={styles.value}>Inv000in{invoiceGenNew?.quotationNo}</Text>
       </View>
       <View style={styles.keyValue}>
         <Text style={styles.label}>Date</Text>
