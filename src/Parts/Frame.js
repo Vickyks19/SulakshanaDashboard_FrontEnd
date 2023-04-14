@@ -5,6 +5,20 @@ import "./Frame.css";
 import { Button, IconButton } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { Col } from "antd";
+import { DataGrid } from "@mui/x-data-grid";
+import { MDBDataTable } from "mdbreact";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+// import Checkbox from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import Pagination from "@mui/material/Pagination";
+import TablePagination from "@mui/material/TablePagination";
 
 function Frame() {
   const [frames, setFrames] = useState([]);
@@ -108,6 +122,11 @@ function Frame() {
     FrameData();
   }, []);
 
+  const [page, setPage] = React.useState(2);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const [selected, setSelected] = useState([]);
+
   return (
     <div className="pcoded-content">
       <h5>FRAME</h5>
@@ -131,32 +150,47 @@ function Frame() {
                 </div>
                 <div className="card-block table-border-style">
                   <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>S. No.</th>
-                          <th>Name</th>
-                          <th>Width</th>
-                          <th>Height</th>
-                          <th>Rate</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {frames.map((item, index) => {
-                          return (
-                            <tr key={item._id}>
-                              <td>
-                                <span style={{ paddingRight: 10 }}>
-                                  <input type="checkbox" />
-                                </span>
-                                {index + 1}
-                              </td>
-                              <td>{item.name}</td>
-                              <td>{item.width}</td>
-                              <td>{item.height}</td>
-                              <td>{item.rate}</td>
-                              <td style={{ minWidth: 190 }}>
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">
+                              <Checkbox
+                                size="small"
+                                color="primary"
+                                indeterminate={
+                                  selected.length > 0 &&
+                                  selected.length < frames.length
+                                }
+                              />
+                            </TableCell>
+
+                            <TableCell align="center">Sl No</TableCell>
+                            <TableCell align="center">Name</TableCell>
+                            <TableCell align="center">Width</TableCell>
+                            <TableCell align="center">Height</TableCell>
+                            <TableCell align="center">Rate</TableCell>
+                            <TableCell align="center">Action</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {frames.map((item, index) => (
+                            <TableRow key={item._id}>
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                align="center"
+                              >
+                                <Checkbox size="small" color="primary" />
+                              </TableCell>
+                              <TableCell align="center">{index + 1}</TableCell>
+                              <TableCell align="center">{item.name}</TableCell>
+                              <TableCell align="center">{item.width}</TableCell>
+                              <TableCell align="center">
+                                {item.height}
+                              </TableCell>
+                              <TableCell align="center">{item.rate}</TableCell>
+                              <TableCell align="center">
                                 <IconButton
                                   size="small"
                                   onClick={() => {
@@ -191,12 +225,22 @@ function Frame() {
                                     fontSize="small"
                                   />
                                 </IconButton>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {/* <Pagination count={10} color="primary"  />
+                     */}
+                    <TablePagination
+                      component="div"
+                      count={100}
+                      page={page}
+                      // onPageChange={handleChangePage}
+                      rowsPerPage={rowsPerPage}
+                      // onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                   </div>
 
                   {/* Add */}
@@ -260,15 +304,15 @@ function Frame() {
                           >
                             Add Data
                           </button>
-                          <Button
-                            className="btn btn-danger btn-sm"
+                          <button
                             variant="secondary"
+                            className="btn btn-danger btn-sm"
                             onClick={handlePostClose}
                             style={{ paddingLeft: "15px" }}
                             data-dismiss="modal"
                           >
                             Close
-                          </Button>
+                          </button>
                         </div>
                       </Modal.Body>
                     </Modal>

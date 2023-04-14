@@ -4,6 +4,17 @@ import Modal from "react-bootstrap/Modal";
 import { IconButton, Button } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+// import Checkbox from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import Pagination from "@mui/material/Pagination";
+import TablePagination from "@mui/material/TablePagination";
 
 function Tax() {
   const [tax, setTax] = useState([]);
@@ -95,6 +106,9 @@ function Tax() {
     FrameData();
   }, []);
 
+  const [page, setPage] = React.useState(2);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
   return (
     <div className="pcoded-content">
       <h5>TAX</h5>
@@ -123,27 +137,34 @@ function Tax() {
                 </div>
                 <div className="card-block table-border-style">
                   <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>S. No.</th>
-                          <th>Tax</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {tax.map((item, index) => {
-                          return (
-                            <tr key={item._id}>
-                              <td>
-                                <span style={{ paddingRight: 10 }}>
-                                  <input type="checkbox" />
-                                </span>
-                                {index + 1}
-                              </td>
-                              <td>{item.taxpercentage}</td>
+                    <TableContainer component={Paper}>
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">
+                              <Checkbox size="small" color="primary" />
+                            </TableCell>
 
-                              <td style={{ minWidth: 190 }}>
+                            <TableCell align="center">Sl No</TableCell>
+                            <TableCell align="center">Tax</TableCell>
+                            <TableCell align="center">Action</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {tax.map((item, index) => (
+                            <TableRow key={item._id}>
+                              <TableCell
+                                component="th"
+                                scope="row"
+                                align="center"
+                              >
+                                <Checkbox size="small" color="primary" />
+                              </TableCell>
+                              <TableCell align="center">{index + 1}</TableCell>
+                              <TableCell align="center">
+                                {item.taxpercentage}
+                              </TableCell>
+                              <TableCell align="center">
                                 <IconButton
                                   size="small"
                                   onClick={() => {
@@ -175,12 +196,22 @@ function Tax() {
                                     fontSize="small"
                                   />
                                 </IconButton>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {/* <Pagination count={10} color="primary"  />
+                     */}
+                    <TablePagination
+                      component="div"
+                      count={100}
+                      page={page}
+                      // onPageChange={handleChangePage}
+                      rowsPerPage={rowsPerPage}
+                      // onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                   </div>
                   <div className="model-box-view">
                     <Modal

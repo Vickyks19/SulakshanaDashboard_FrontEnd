@@ -26,7 +26,11 @@ function InvoiceNo({ invoiceNew }) {
       <View style={styles.keyValue}>
         <Text style={styles.label}>Invoice No</Text>
         <Text>: </Text>
-        <Text style={styles.value}>{invoiceNew?.quotationNo}</Text>
+        <Text style={styles.value}>
+          {" "}
+          Inv000in
+          {invoiceNew?.quotationNo}
+        </Text>
       </View>
       <View style={styles.keyValue}>
         <Text style={styles.label}>Date</Text>
